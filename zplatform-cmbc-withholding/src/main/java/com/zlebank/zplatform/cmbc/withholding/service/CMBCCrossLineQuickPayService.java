@@ -15,7 +15,7 @@ import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 
 
 /**
- * Class Description
+ * 民生代扣渠道封装成快捷支付业务
  *
  * @author guojia
  * @version
