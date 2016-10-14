@@ -36,6 +36,7 @@ import com.zlebank.zplatform.cmbc.common.processor.ITradeReceiveProcessor;
 import com.zlebank.zplatform.cmbc.common.processor.TradeTypeEnum;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
+import com.zlebank.zplatform.cmbc.common.utils.SpringContext;
 import com.zlebank.zplatform.cmbc.common.utils.UUIDUtil;
 import com.zlebank.zplatform.cmbc.dao.RealnameAuthDAO;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
@@ -51,6 +52,7 @@ import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingR
 import com.zlebank.zplatform.cmbc.withholding.response.bean.WhiteListQueryResultBean;
 import com.zlebank.zplatform.cmbc.withholding.response.bean.WhiteListResultBean;
 import com.zlebank.zplatform.cmbc.withholding.security.RSAHelper;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCWhiteListService;
 
 /**
@@ -94,15 +96,16 @@ public class CMBCWithholdingReciveProcessor implements ReceiveProcessor{
             return UNKNOW;
         }
     }
-    private TxnsWithholdingService txnsWithholdingService;
-    private RealnameAuthDAO realnameAuthDAO;
-    private TxnsWhiteListService txnsWhiteListService;
+    private TxnsWithholdingService txnsWithholdingService = (TxnsWithholdingService) SpringContext.getContext().getBean("txnsWithholdingService");
+    private RealnameAuthDAO realnameAuthDAO = (RealnameAuthDAO) SpringContext.getContext().getBean("realnameAuthDAO");
+    private TxnsWhiteListService txnsWhiteListService = (TxnsWhiteListService) SpringContext.getContext().getBean("txnsWhiteListService");
     //private ICMBCTransferService cmbcTransferService;
-    private ITradeReceiveProcessor tradeReceiveProcessor;
-    private TxnsOrderinfoDAO txnsOrderinfoDAO;
-    private TxnsLogDAO txnsLogDAO;
-    private RspmsgDAO rspmsgDAO;
-    private CMBCWhiteListService cmbcWhiteListService;
+    //private ITradeReceiveProcessor tradeReceiveProcessor = (ITradeReceiveProcessor) SpringContext.getContext().getBean("txnsWithholdingService");
+    private TxnsOrderinfoDAO txnsOrderinfoDAO= (TxnsOrderinfoDAO) SpringContext.getContext().getBean("txnsOrderinfoDAO");
+    private TxnsLogDAO txnsLogDAO= (TxnsLogDAO) SpringContext.getContext().getBean("txnsLogDAO");
+    private RspmsgDAO rspmsgDAO= (RspmsgDAO) SpringContext.getContext().getBean("rspmsgDAO");
+    private CMBCWhiteListService cmbcWhiteListService= (CMBCWhiteListService) SpringContext.getContext().getBean("cmbcWhiteListService");
+    private CMBCCrossLineQuickPayService cmbcCrossLineQuickPayService = (CMBCCrossLineQuickPayService) SpringContext.getContext().getBean("cmbcCrossLineQuickPayService");;
     /** 
      *
      * @param data
@@ -205,7 +208,7 @@ public class CMBCWithholdingReciveProcessor implements ReceiveProcessor{
                                 ResultBean resultBean = new ResultBean(withholding);
                                 TradeBean tradeBean = new TradeBean();
                                 tradeBean.setTxnseqno(withholding.getTxnseqno());
-                                tradeReceiveProcessor.onReceive(resultBean, tradeBean, TradeTypeEnum.ACCOUNTING);
+                                cmbcCrossLineQuickPayService.dealWithAccounting(tradeBean.getTxnseqno(), resultBean);
                             } else if(withholding.getExectype().equals("E")){
                                 saveFailedCMBCTrade(withholding);
                             }else{

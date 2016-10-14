@@ -21,7 +21,7 @@ import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
  * @date 2016年10月13日 下午5:13:48
  * @since 
  */
-public interface CMBCZlebankWithholdingService {
+public interface ZlebankToCMBCWithholdingService {
 
 	/**
 	 * 代扣

@@ -25,23 +25,28 @@
               <value>classpath:*.properties</value>  
             </list>  
         </property>  
-    </bean>   
+    </bean>  
+     
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<!-- 注解方式配置 -->
 		<property name="packagesToScan">
 			<list>
-				<value>com.zlebank.zplatform.order.common.dao.pojo</value>
+				<value>com.zlebank.zplatform.cmbc.common.pojo</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
 			<props>
-				<prop key="dialect">org.hibernate.dialect.Oracle9Dialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">validate</prop> -->
+				<prop key="hibernate.connection.SetBigStringTryClob">true</prop>
+				<prop key="hibernate.autoReconnect">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.format_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">none</prop>
-				<prop key="hibernate.id.new_generator_mappings">true</prop>
+				<!-- <propery name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property> -->
+
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
 			</props>
 		</property>
 	</bean>
@@ -98,16 +103,8 @@
         </property> 
      </bean> 
     
-    <bean class="com.zlebank.zplatform.hessian.hessianspring.HessianClientScannerConfigurer">
-    <property name="basePackage" value="com.zlebank.zplatform.rmi"></property>
-    <property name="annotationClass" value="com.zlebank.zplatform.hessian.core.Hessian"></property>
-    <property name="locations">
-        <list>
-            <value>classpath:hessianurl.properties</value>
-        </list>
-    </property>
-    </bean>
-    <bean id="logHelper" class="com.zlebank.zplatform.utils.LogHelper"/>
+    
+    <!-- <bean id="logHelper" class="com.zlebank.zplatform.utils.LogHelper"/>
 	<aop:config>
 	    <aop:aspect ref="logHelper">
 	        <aop:pointcut id="pointcut" expression="execution(* com.zlebank.zplatform..*.*(..))"/>
@@ -116,5 +113,5 @@
 	        <aop:around method="around"  pointcut-ref="pointcut" />
 	        <aop:after-throwing method="throwException" pointcut-ref="pointcut" throwing="ex" />
 	    </aop:aspect>
-	</aop:config>
+	</aop:config> -->
 </beans>

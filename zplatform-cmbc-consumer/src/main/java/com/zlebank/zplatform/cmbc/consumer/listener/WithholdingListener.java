@@ -28,7 +28,7 @@ import com.google.common.base.Charsets;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.consumer.enums.WithholdingTagsEnum;
-import com.zlebank.zplatform.cmbc.withholding.service.CMBCZlebankWithholdingService;
+import com.zlebank.zplatform.cmbc.withholding.service.ZlebankToCMBCWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.WithholdingCacheResultService;
 
 /**
@@ -47,7 +47,7 @@ public class WithholdingListener implements MessageListenerConcurrently{
 	private static final String KEY = "CMBCWITHHOLDING:";
 	
 	@Autowired
-	private CMBCZlebankWithholdingService cmbcZlebankWithholdingService;
+	private ZlebankToCMBCWithholdingService cmbcZlebankWithholdingService;
 	@Autowired
 	private WithholdingCacheResultService withholdingCacheResultService;
 	/**

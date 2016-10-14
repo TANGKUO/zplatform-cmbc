@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
-import com.zlebank.zplatform.cmbc.withholding.service.CMBCZlebankWithholdingService;
+import com.zlebank.zplatform.cmbc.withholding.service.ZlebankToCMBCWithholdingService;
 
 /**
  * Class Description
@@ -27,8 +27,8 @@ import com.zlebank.zplatform.cmbc.withholding.service.CMBCZlebankWithholdingServ
  * @since 
  */
 @Service
-public class CMBCZlebankWithholdingServiceImpl implements
-		CMBCZlebankWithholdingService {
+public class ZlebankToCMBCWithholdingServiceImpl implements
+		ZlebankToCMBCWithholdingService {
 
 	@Autowired
 	private CMBCCrossLineQuickPayService cmbcCrossLineQuickPayService;

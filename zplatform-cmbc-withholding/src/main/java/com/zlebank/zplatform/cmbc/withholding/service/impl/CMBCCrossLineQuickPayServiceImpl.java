@@ -63,6 +63,7 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 	private SerialNumberService serialNumberService;
 	@Autowired
 	private CMBCWithholdingService cmbcWithholdingService;
+	@Autowired
 	private CMBCRealNameAuthService cmbcRealNameAuthService;
 	
 	

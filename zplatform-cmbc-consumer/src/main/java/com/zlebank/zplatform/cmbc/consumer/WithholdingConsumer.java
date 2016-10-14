@@ -50,10 +50,10 @@ public class WithholdingConsumer implements ApplicationListener<ContextRefreshed
 		 * 当前例子是PushConsumer用法，使用方式给用户感觉是消息从RocketMQ服务器推到了应用客户端。<br>
 		 * 但是实际PushConsumer内部是使用长轮询Pull方式从RocketMQ服务器拉消息，然后再回调用户Listener方法<br>
 		 */
-		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(RESOURCE.getString("simple.order.consumer.group"));
+		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(RESOURCE.getString("cmbc.withholding.producer.group"));
 		consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
 		consumer.setNamesrvAddr(RESOURCE.getString("single.namesrv.addr"));
-		consumer.setInstanceName(RESOURCE.getString("simple.order.instancename"));
+		consumer.setInstanceName(RESOURCE.getString("cmbc.withholding.instancename"));
 		String subExpression = "";
 		for(WithholdingTagsEnum tagsEnum:WithholdingTagsEnum.values()){
 			if(StringUtils.isNotEmpty(subExpression)){
@@ -62,7 +62,7 @@ public class WithholdingConsumer implements ApplicationListener<ContextRefreshed
 			subExpression+=tagsEnum.getCode();
 		}
 		log.info("subExpression:{}",subExpression);
-		consumer.subscribe(RESOURCE.getString("simple.order.subscribe"), subExpression);
+		consumer.subscribe(RESOURCE.getString("cmbc.withholding.subscribe"), subExpression);
 		consumer.registerMessageListener(simpleOrderListener);//在监听器中实现创建order
 		log.info("NamesrvAddr:{},InstanceName:{},subscribe:{},MessageListener:{}",consumer.getNamesrvAddr(),consumer.getInstanceName(),consumer.getSubscription(),consumer.getMessageListener());
 		consumer.start();

@@ -44,7 +44,7 @@ import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
  * @date 2016年10月13日 下午2:07:03
  * @since
  */
-@Repository
+@Repository("txnsLogDAO")
 public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 		TxnsLogDAO {
 
@@ -79,7 +79,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 	public void updatePayInfo(PayPartyBean payPartyBean) {
-		String hql = "update TxnsLogModel set paytype=?,payordno=?,payinst=?,payfirmerno=?,payordcomtime=?,payrettsnseqno=? where txnseqno=?";
+		String hql = "update PojoTxnsLog set paytype=?,payordno=?,payinst=?,payfirmerno=?,payordcomtime=?,payrettsnseqno=? where txnseqno=?";
 		Query query = getSession().createQuery(hql);
 		Object[] paramaters = new Object[] {
 				StringUtils.isNotEmpty(payPartyBean.getPaytype()) ? payPartyBean
@@ -98,7 +98,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 	public void updateTradeStatFlag(String txnseqno,
 			TradeStatFlagEnum tradeStatFlagEnum) {
-		String hql = "update TxnsLogModel set tradestatflag = ? where txnseqno = ?";
+		String hql = "update PojoTxnsLog set tradestatflag = ? where txnseqno = ?";
 		Query query = getSession().createQuery(hql);
 		query.setParameter(0, tradeStatFlagEnum.getStatus());
 		query.setParameter(1, txnseqno);
@@ -110,7 +110,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
 	public void updateCMBCTradeData(PayPartyBean payPartyBean){
 		Object[] paramaters = null;
-        String hql = "update TxnsLogModel set paytype=?,payordno=?,payinst=?,payfirmerno=?,payordcomtime=?,payrettsnseqno=?,payretcode=?,payretinfo=?,retcode=?,retinfo=?,tradestatflag=?,payordfintime=?, retdatetime=?,tradetxnflag=?,relate=?,tradeseltxn=? where txnseqno=?";
+        String hql = "update PojoTxnsLog set paytype=?,payordno=?,payinst=?,payfirmerno=?,payordcomtime=?,payrettsnseqno=?,payretcode=?,payretinfo=?,retcode=?,retinfo=?,tradestatflag=?,payordfintime=?, retdatetime=?,tradetxnflag=?,relate=?,tradeseltxn=? where txnseqno=?";
         Query query = getSession().createQuery(hql);
 	    try {
 	        PojoRspmsg msg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING,payPartyBean.getPayretcode().trim());
