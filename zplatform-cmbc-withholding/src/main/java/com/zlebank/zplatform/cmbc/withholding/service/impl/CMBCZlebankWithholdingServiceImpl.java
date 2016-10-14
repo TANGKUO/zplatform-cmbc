@@ -37,7 +37,7 @@ public class CMBCZlebankWithholdingServiceImpl implements
 	 * @param tradeBean
 	 */
 	@Override
-	public void withholding(TradeBean tradeBean) {
+	public ResultBean withholding(TradeBean tradeBean) {
 		/**
 		 * 代扣业务流程
 		 * 1。银行卡签约：实名认证，白名单采集
@@ -49,6 +49,8 @@ public class CMBCZlebankWithholdingServiceImpl implements
 		resultBean = cmbcCrossLineQuickPayService.submitPay(tradeBean);
 		
 		cmbcCrossLineQuickPayService.dealWithAccounting(tradeBean.getTxnseqno(), resultBean);
+		
+		return resultBean;
 	}
 
 }

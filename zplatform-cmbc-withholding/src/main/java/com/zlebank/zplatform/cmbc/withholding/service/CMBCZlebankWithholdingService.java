@@ -10,6 +10,7 @@
  */
 package com.zlebank.zplatform.cmbc.withholding.service;
 
+import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 
 /**
@@ -26,5 +27,5 @@ public interface CMBCZlebankWithholdingService {
 	 * 代扣
 	 * @param tradeBean 交易数据bean
 	 */
-	public void withholding(TradeBean tradeBean);
+	public ResultBean withholding(TradeBean tradeBean);
 }

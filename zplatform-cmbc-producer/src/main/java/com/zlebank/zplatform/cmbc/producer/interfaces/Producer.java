@@ -16,6 +16,7 @@ import com.alibaba.rocketmq.client.producer.SendCallback;
 import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
 import com.zlebank.zplatform.cmbc.producer.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.producer.enums.WithholdingTagsEnum;
 
 
 /**
@@ -37,7 +38,7 @@ public interface Producer {
 	 * @throws RemotingException
 	 * @throws InterruptedException
 	 */
-	public void sendMessage(Object message,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
+	public void sendMessage(Object message,WithholdingTagsEnum tags,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
 	
 	/**
 	 * 生产者发送JSON信息
@@ -48,7 +49,7 @@ public interface Producer {
 	 * @throws RemotingException
 	 * @throws InterruptedException
 	 */
-	public void sendJsonMessage(String message,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
+	public void sendJsonMessage(String message,WithholdingTagsEnum tags,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
 	
 	/**
 	 * 生产者发送JSON信息
@@ -59,7 +60,7 @@ public interface Producer {
 	 * @throws RemotingException
 	 * @throws InterruptedException
 	 */
-	public SendResult sendJsonMessage(String message)throws MQClientException, RemotingException, InterruptedException,MQBrokerException;
+	public SendResult sendJsonMessage(String message,WithholdingTagsEnum tags)throws MQClientException, RemotingException, InterruptedException,MQBrokerException;
 	
 	/**
 	 * 关闭生产者
