@@ -41,7 +41,7 @@ public class WithholdingServiceTest {
 				+ "\"orderId\":\"2016101416431832\",\"payinstiId\":\"93000002\",\"reaPayOrderNo\":\"1610149600006692\",\"subMerchId\":\"0\",\"tn\":\"161014001400058499\",\"tradeType\":\"01\","
 				+ "\"txnseqno\":\"1610149900059721\"}";
 		TradeBean tradeBean = JSON.parseObject(json, TradeBean.class);
-		tradeBean.setTxnseqno("");
+		//tradeBean.setTxnseqno("");
 		try {
 			Producer producer = new WithholdingProducer("192.168.101.104:9876");
 			//producer.sendJsonMessage(JSON.toJSONString(orderBean), OrderTagsEnum.COMMONCONSUME_SIMPLIFIED);

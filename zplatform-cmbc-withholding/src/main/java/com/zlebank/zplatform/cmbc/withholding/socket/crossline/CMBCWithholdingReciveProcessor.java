@@ -14,8 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
@@ -32,8 +32,6 @@ import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWhiteList;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
-import com.zlebank.zplatform.cmbc.common.processor.ITradeReceiveProcessor;
-import com.zlebank.zplatform.cmbc.common.processor.TradeTypeEnum;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.common.utils.SpringContext;
@@ -65,7 +63,7 @@ import com.zlebank.zplatform.cmbc.withholding.service.CMBCWhiteListService;
  */
 public class CMBCWithholdingReciveProcessor implements ReceiveProcessor{
     private static final String ENCODING = "UTF-8";
-    private static final Log log = LogFactory.getLog(CMBCWithholdingReciveProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(CMBCWithholdingReciveProcessor.class);
     private enum MessageType{
         /**
          *  1003    实时代扣请求

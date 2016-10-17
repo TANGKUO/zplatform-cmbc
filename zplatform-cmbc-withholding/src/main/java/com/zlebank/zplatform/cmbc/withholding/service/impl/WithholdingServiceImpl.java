@@ -13,8 +13,8 @@ package com.zlebank.zplatform.cmbc.withholding.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
@@ -47,7 +47,7 @@ import com.zlebank.zplatform.cmbc.withholding.socket.crossline.WithholdingLongSo
 @Service("withholdingService")
 public class WithholdingServiceImpl implements WithholdingService {
     private static final String ENCODING = "UTF-8";
-    private static final Log log = LogFactory.getLog(WithholdingServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(WithholdingServiceImpl.class);
     public static final String REALNAMEAUTH = "1004    ";
     public static final String REALNAMEAUTHQUERY = "3004    ";
     public static final String WITHHOLDING = "1003    ";

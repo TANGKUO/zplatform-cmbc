@@ -36,7 +36,7 @@ import com.zlebank.zplatform.cmbc.withholding.service.WithholdingService;
  * @date 2016年10月13日 下午3:19:03
  * @since 
  */
-@Service
+@Service("cmbcWhiteListService")
 public class CMBCWhiteListServiceImpl implements CMBCWhiteListService {
 	
 	@Autowired
