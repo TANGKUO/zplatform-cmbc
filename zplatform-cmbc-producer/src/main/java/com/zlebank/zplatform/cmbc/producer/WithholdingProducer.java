@@ -44,14 +44,14 @@ import com.zlebank.zplatform.cmbc.producer.redis.RedisFactory;
 public class WithholdingProducer implements Producer{
 	private final static Logger logger = LoggerFactory.getLogger(WithholdingProducer.class);
 	private static final String KEY = "CMBCWITHHOLDING:";
-	private static final  ResourceBundle RESOURCE = ResourceBundle.getBundle("producer");
+	private static final  ResourceBundle RESOURCE = ResourceBundle.getBundle("producer_cmbc");
 	
 	//RocketMQ消费者客户端
 	private DefaultMQProducer producer;
 	//主题
 	private String topic;
-	
-	public WithholdingProducer(String namesrvAddr) throws MQClientException{
+	private WithholdingTagsEnum tags;
+	public WithholdingProducer(String namesrvAddr,WithholdingTagsEnum tags) throws MQClientException{
 		logger.info("【初始化WithholdingProducer】");
 		logger.info("【namesrvAddr】"+namesrvAddr);
 		producer = new DefaultMQProducer(RESOURCE.getString("cmbc.withholding.producer.group"));
@@ -59,6 +59,7 @@ public class WithholdingProducer implements Producer{
 		Random random = new Random();
         producer.setInstanceName(RESOURCE.getString("cmbc.withholding.instancename")+random.nextInt(9999));
         topic = RESOURCE.getString("cmbc.withholding.subscribe");
+        this.tags = tags;
         logger.info("【初始化SimpleOrderProducer结束】");
 	}
 	/**
@@ -70,7 +71,7 @@ public class WithholdingProducer implements Producer{
 	 * @throws InterruptedException
 	 */
 	@Override
-	public void sendMessage(Object message, WithholdingTagsEnum tags,SendCallback sendCallback)
+	public void sendMessage(Object message,SendCallback sendCallback)
 			throws MQClientException, RemotingException, InterruptedException {
 		
 		
@@ -85,7 +86,7 @@ public class WithholdingProducer implements Producer{
 	 * @throws InterruptedException
 	 */
 	@Override
-	public void sendJsonMessage(String message,WithholdingTagsEnum tags, SendCallback sendCallback)
+	public void sendJsonMessage(String message, SendCallback sendCallback)
 			throws MQClientException, RemotingException, InterruptedException {
 		
 		
@@ -101,7 +102,7 @@ public class WithholdingProducer implements Producer{
 	 * @throws MQBrokerException
 	 */
 	@Override
-	public SendResult sendJsonMessage(String message,WithholdingTagsEnum tags) throws MQClientException,
+	public SendResult sendJsonMessage(String message) throws MQClientException,
 			RemotingException, InterruptedException, MQBrokerException {
 		if(producer==null){
 			throw new MQClientException(-1,"SimpleOrderProducer为空");

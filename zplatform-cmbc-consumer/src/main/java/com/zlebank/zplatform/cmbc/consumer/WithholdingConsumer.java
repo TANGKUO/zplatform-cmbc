@@ -38,7 +38,7 @@ import com.zlebank.zplatform.cmbc.consumer.enums.WithholdingTagsEnum;
 @Service
 public class WithholdingConsumer implements ApplicationListener<ContextRefreshedEvent>{
 	private static final Logger log = LoggerFactory.getLogger(WithholdingConsumer.class);
-	private static final  ResourceBundle RESOURCE = ResourceBundle.getBundle("consumer");
+	private static final  ResourceBundle RESOURCE = ResourceBundle.getBundle("consumer_cmbc");
 	@Autowired
 	@Qualifier("withholdingListener")
 	private MessageListenerConcurrently simpleOrderListener;
@@ -66,7 +66,7 @@ public class WithholdingConsumer implements ApplicationListener<ContextRefreshed
 		consumer.registerMessageListener(simpleOrderListener);//在监听器中实现创建order
 		log.info("NamesrvAddr:{},InstanceName:{},subscribe:{},MessageListener:{}",consumer.getNamesrvAddr(),consumer.getInstanceName(),consumer.getSubscription(),consumer.getMessageListener());
 		consumer.start();
-		log.info("{},消费者启动",consumer.getInstanceName());
+		log.info("{},WithholdingConsumer消费者启动",consumer.getInstanceName());
 	}
 
 	/**

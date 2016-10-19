@@ -8,7 +8,7 @@
  * Copyright (c) 2015,zlebank.All rights reserved.
  * 
  */
-package com.zlebank.zplatform.cmbc.withholding.security;
+package com.zlebank.zplatform.cmbc.security;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

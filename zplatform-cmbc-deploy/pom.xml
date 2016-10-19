@@ -356,6 +356,7 @@
 	<modules>
 		<module>../zplatform-cmbc-common</module>
 		<module>../zplatform-cmbc-withholding</module>
+		<module>../zplatform-cmbc-insteadpay</module>
 		<module>../zplatform-cmbc-consumer</module>
 		<module>../zplatform-cmbc-producer</module>
 		<module>../zplatform-cmbc-service</module>

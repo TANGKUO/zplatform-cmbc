@@ -43,7 +43,7 @@ import com.zlebank.zplatform.cmbc.withholding.service.WithholdingCacheResultServ
 public class WithholdingListener implements MessageListenerConcurrently{
 
 	private static final Logger log = LoggerFactory.getLogger(WithholdingListener.class);
-	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("consumer");
+	private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("consumer_cmbc");
 	private static final String KEY = "CMBCWITHHOLDING:";
 	
 	@Autowired

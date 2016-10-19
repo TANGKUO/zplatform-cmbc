@@ -26,5 +26,9 @@ public interface SerialNumberService {
 	 */
 	public String generateCMBCSerialNo();
 	
-	
+	/**
+	 * 生成民生代付交易流水号
+	 * @return
+	 */
+	public String generateCMBCInsteadPaySerialNo();
 }

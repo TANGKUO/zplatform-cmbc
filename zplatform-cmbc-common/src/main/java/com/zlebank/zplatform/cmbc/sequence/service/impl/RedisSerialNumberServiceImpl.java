@@ -35,7 +35,7 @@ public class RedisSerialNumberServiceImpl implements SerialNumberService {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 	private static final String CMBC_KEY="SEQUENCE:CMBCSERIALNO";
-	
+	private static final String CMBC_INSTEADPAY_KEY="SEQUENCE:CMBCINSTEADPAYSERIALNO";
 	public String formateSequence(String key){
 		ValueOperations<String, String> opsForValue = redisTemplate.opsForValue();
 		Long increment = opsForValue.increment(key, 1);
@@ -55,6 +55,16 @@ public class RedisSerialNumberServiceImpl implements SerialNumberService {
 	@Override
 	public String generateCMBCSerialNo() {
 		String seqNo = formateSequence(CMBC_KEY);
+		return seqNo.substring(0, 6) + "93" + seqNo.substring(6);
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	@Override
+	public String generateCMBCInsteadPaySerialNo() {
+		String seqNo = formateSequence(CMBC_INSTEADPAY_KEY);
 		return seqNo.substring(0, 6) + "93" + seqNo.substring(6);
 	}
 }

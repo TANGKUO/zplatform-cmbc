@@ -43,9 +43,9 @@ public class WithholdingServiceTest {
 		TradeBean tradeBean = JSON.parseObject(json, TradeBean.class);
 		//tradeBean.setTxnseqno("");
 		try {
-			Producer producer = new WithholdingProducer("192.168.101.104:9876");
+			Producer producer = new WithholdingProducer("192.168.101.104:9876",WithholdingTagsEnum.WITHHOLDING);
 			//producer.sendJsonMessage(JSON.toJSONString(orderBean), OrderTagsEnum.COMMONCONSUME_SIMPLIFIED);
-			SendResult sendResult = producer.sendJsonMessage(JSON.toJSONString(tradeBean), WithholdingTagsEnum.WITHHOLDING);
+			SendResult sendResult = producer.sendJsonMessage(JSON.toJSONString(tradeBean));
 			ResultBean queryReturnResult = producer.queryReturnResult(sendResult);
 			System.out.println(JSON.toJSONString(queryReturnResult));
 			//TimeUnit.MINUTES.sleep(1);

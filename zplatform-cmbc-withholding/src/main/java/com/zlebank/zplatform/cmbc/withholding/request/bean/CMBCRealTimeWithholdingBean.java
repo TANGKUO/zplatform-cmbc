@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
-import com.zlebank.zplatform.cmbc.withholding.security.CMBCAESUtils;
+import com.zlebank.zplatform.cmbc.security.CMBCAESUtils;
 
 /**
  * Class Description

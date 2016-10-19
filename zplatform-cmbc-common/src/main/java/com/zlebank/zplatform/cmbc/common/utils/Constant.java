@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 /**
  * Class Description
  *
@@ -36,6 +38,10 @@ public class Constant {
     public static final String WHITELISTQUERY = "3007";
     public static final String WITHHOLDINGSELF = "1009";
     public static final String WITHHOLDINGSELFQUERY = "3009";
+    
+    
+    public static final String REALTIME_INSTEADPAY = "1002";
+    public static final String REALTIME_INSTEADPAY_QUERY = "3002";
 	
     
     private String cmbc_version;
@@ -46,6 +52,7 @@ public class Constant {
     private String cmbc_withholding_private_key;
     private String cmbc_withholding_ip;
     private int cmbc_withholding_port;
+    private String cmbc_insteadpay_ip;
     private int cmbc_insteadpay_port;
     private String cmbc_insteadpay_merid;
     private String cmbc_self_withholding_ip;
@@ -60,6 +67,10 @@ public class Constant {
     private String cmbc_withholding_self_private_key;
     private String cmbc_withholding_self_chnl_code;
     
+    private String cmbc_insteadpay_privatekey;
+    private String cmbc_insteadpay_publickey;
+    private boolean canRun;
+    private String refresh_interval;
     private static Constant constant;
     public static synchronized Constant getInstance(){
 		if(constant==null){
@@ -69,46 +80,21 @@ public class Constant {
 	}
     
 	private Constant(){
-		try {
-			String path = "/home/web/trade/";
-			File file = new File(path+ "zlrt.properties");
-			if(!file.exists()){
-			    path = getClass().getResource("/").getPath();
-			    file = null;
+		refresh();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (canRun) {
+					try {
+						refresh();
+						int interval = NumberUtils.toInt(refresh_interval, 60) * 1000;// 刷新间隔，单位：秒
+						Thread.sleep(interval);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			Properties prop = new Properties();
-			InputStream stream = null;
-			stream = new BufferedInputStream(new FileInputStream(new File(path+ "zlrt.properties")));
-			prop.load(stream);
-			
-			cmbc_version=prop.getProperty("cmbc_version");
-			cmbc_merid=prop.getProperty("cmbc_merid");
-			cmbc_mername=prop.getProperty("cmbc_mername");
-			cmbc_withholding_chnl_code=prop.getProperty("cmbc_withholding_chnl_code");
-			cmbc_withholding_public_key=prop.getProperty("cmbc_withholding_public_key");
-			cmbc_withholding_private_key=prop.getProperty("cmbc_withholding_private_key");
-			cmbc_withholding_ip=prop.getProperty("cmbc_withholding_ip");
-			cmbc_withholding_port=Integer.valueOf(prop.getProperty("cmbc_withholding_port"));
-			cmbc_insteadpay_port=Integer.valueOf(prop.getProperty("cmbc_insteadpay_port"));
-			cmbc_insteadpay_merid=prop.getProperty("cmbc_insteadpay_merid");
-			cmbc_self_withholding_ip=prop.getProperty("cmbc_self_withholding_ip");
-			cmbc_self_withholding_port=Integer.valueOf(prop.getProperty("cmbc_self_withholding_port"));
-			cmbc_insteadpay_batch_md5=prop.getProperty("cmbc_insteadpay_batch_md5");
-			cmbc_secretfilepath=prop.getProperty("cmbc_secretfilepath");
-			cmbc_download_file_path=prop.getProperty("cmbc_download_file_path");
-			cmbc_plainfilepath=prop.getProperty("cmbc_plainFilePath");
-			cmbc_self_merid=prop.getProperty("cmbc_self_merid");
-			cmbc_self_merchant=prop.getProperty("cmbc_self_merchant");
-			cmbc_withholding_self_public_key=prop.getProperty("cmbc_withholding_self_public_key");
-			cmbc_withholding_self_private_key=prop.getProperty("cmbc_withholding_self_private_key");
-			cmbc_withholding_self_chnl_code=prop.getProperty("cmbc_withholding_self_chnl_code");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}).start();
 	}
 	
 	
@@ -146,6 +132,12 @@ public class Constant {
 			cmbc_withholding_self_public_key=prop.getProperty("cmbc_withholding_self_public_key");
 			cmbc_withholding_self_private_key=prop.getProperty("cmbc_withholding_self_private_key");
 			cmbc_withholding_self_chnl_code=prop.getProperty("cmbc_withholding_self_chnl_code");
+			cmbc_insteadpay_ip = prop.getProperty("cmbc_insteadpay_ip");
+			
+			cmbc_insteadpay_privatekey = prop.getProperty("cmbc_insteadpay_privatekey");
+			cmbc_insteadpay_publickey = prop.getProperty("cmbc_insteadpay_publickey");
+			canRun = true;
+			refresh_interval = prop.getProperty("refresh_interval");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -411,6 +403,48 @@ public class Constant {
 	public void setCmbc_withholding_self_chnl_code(
 			String cmbc_withholding_self_chnl_code) {
 		this.cmbc_withholding_self_chnl_code = cmbc_withholding_self_chnl_code;
+	}
+
+	/**
+	 * @return the cmbc_insteadpay_ip
+	 */
+	public String getCmbc_insteadpay_ip() {
+		return cmbc_insteadpay_ip;
+	}
+
+	/**
+	 * @param cmbc_insteadpay_ip the cmbc_insteadpay_ip to set
+	 */
+	public void setCmbc_insteadpay_ip(String cmbc_insteadpay_ip) {
+		this.cmbc_insteadpay_ip = cmbc_insteadpay_ip;
+	}
+
+	/**
+	 * @return the cmbc_insteadpay_privatekey
+	 */
+	public String getCmbc_insteadpay_privatekey() {
+		return cmbc_insteadpay_privatekey;
+	}
+
+	/**
+	 * @param cmbc_insteadpay_privatekey the cmbc_insteadpay_privatekey to set
+	 */
+	public void setCmbc_insteadpay_privatekey(String cmbc_insteadpay_privatekey) {
+		this.cmbc_insteadpay_privatekey = cmbc_insteadpay_privatekey;
+	}
+
+	/**
+	 * @return the cmbc_insteadpay_publickey
+	 */
+	public String getCmbc_insteadpay_publickey() {
+		return cmbc_insteadpay_publickey;
+	}
+
+	/**
+	 * @param cmbc_insteadpay_publickey the cmbc_insteadpay_publickey to set
+	 */
+	public void setCmbc_insteadpay_publickey(String cmbc_insteadpay_publickey) {
+		this.cmbc_insteadpay_publickey = cmbc_insteadpay_publickey;
 	}
 	
 	

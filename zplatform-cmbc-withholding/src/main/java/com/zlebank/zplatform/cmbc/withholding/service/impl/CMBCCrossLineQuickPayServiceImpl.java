@@ -35,6 +35,7 @@ import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCRealNameAuthService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
+import com.zlebank.zplatform.trade.acc.service.TradeAccountingService;
 
 /**
  * Class Description
@@ -65,7 +66,8 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 	private CMBCWithholdingService cmbcWithholdingService;
 	@Autowired
 	private CMBCRealNameAuthService cmbcRealNameAuthService;
-	
+	@Autowired
+	private TradeAccountingService tradeAccountingService;
 	
 	public ResultBean bankSign(TradeBean tradeBean){
 		
@@ -145,6 +147,7 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
         payPartyBean.setPayretcode(withholding.getExeccode());
         payPartyBean.setPayretinfo(withholding.getExecmsg());
         txnsLogDAO.updateCMBCTradeData(payPartyBean);
+        tradeAccountingService.accountingFor(txnseqno);
         //txnsLogDAO.updatePayInfo_Fast(payPartyBean);
         //更新交易流水中心应答信息
         //txnsLogDAO.updateCMBCWithholdingRetInfo(txnseqno, withholding);

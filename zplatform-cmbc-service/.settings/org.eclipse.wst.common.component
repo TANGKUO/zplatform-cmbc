@@ -13,6 +13,12 @@
         <dependent-module archiveName="zplatform-cmbc-common-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/zplatform-cmbc-common/zplatform-cmbc-common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="zplatform-trade-acc-api-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/zplatform-trade-acc-api/zplatform-trade-acc-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="zplatform-cmbc-insteadpay-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/zplatform-cmbc-insteadpay/zplatform-cmbc-insteadpay">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="zplatform-cmbc-service"/>
         <property name="java-output-path" value="/zplatform-cmbc-service/target/classes"/>
     </wb-module>

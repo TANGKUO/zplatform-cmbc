@@ -8,7 +8,9 @@
  * Copyright (c) 2015,zlebank.All rights reserved.
  * 
  */
-package com.zlebank.zplatform.cmbc.withholding.bean;
+package com.zlebank.zplatform.cmbc.common.bean;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 
 /**
@@ -19,14 +21,21 @@ package com.zlebank.zplatform.cmbc.withholding.bean;
  * @date 2015年11月26日 上午11:20:47
  * @since 
  */
-public class InsteadPayMessageBean {
-    private String acc_no="";// 收款人账户号
-    private String acc_name="";// 收款人账户名
-    private String bank_type="";// 收款人账户联行号
-    private String bank_name="";// 收款人账户开户行名称
-    private String trans_amt="";// 交易金额
-    private String remark="";// 客户流水摘要
-    
+public class InsteadPayTradeBean {
+	@JSONField(name="acc_no")
+    private String acc_no;// 收款人账户号
+	@JSONField(name="acc_name")
+    private String acc_name;// 收款人账户名
+	@JSONField(name="bank_type")
+    private String bank_type;// 收款人账户联行号
+	@JSONField(name="bank_name")
+    private String bank_name;// 收款人账户开户行名称
+	@JSONField(name="trans_amt")
+    private String trans_amt;// 交易金额
+	@JSONField(name="remark")
+    private String remark;// 客户流水摘要
+	@JSONField(name="txnseqno")
+    private String txnseqno;//交易序列号
     /**
      * @return the acc_no
      */
@@ -112,6 +121,20 @@ public class InsteadPayMessageBean {
     }
 
     /**
+	 * @return the txnseqno
+	 */
+	public String getTxnseqno() {
+		return txnseqno;
+	}
+
+	/**
+	 * @param txnseqno the txnseqno to set
+	 */
+	public void setTxnseqno(String txnseqno) {
+		this.txnseqno = txnseqno;
+	}
+
+	/**
      * @param acc_no
      * @param acc_name
      * @param bank_type
@@ -119,7 +142,7 @@ public class InsteadPayMessageBean {
      * @param trans_amt
      * @param remark
      */
-    public InsteadPayMessageBean(String acc_no, String acc_name,
+    public InsteadPayTradeBean(String acc_no, String acc_name,
             String bank_type, String bank_name, String trans_amt, String remark) {
         super();
         this.acc_no = acc_no;
@@ -129,7 +152,7 @@ public class InsteadPayMessageBean {
         this.trans_amt = trans_amt;
         this.remark = remark;
     }
-    public InsteadPayMessageBean(String text) {
+    public InsteadPayTradeBean(String text) {
         this.acc_no = "6228480018543668976";
         this.acc_name = "郭佳";
         this.bank_type = "";
@@ -137,5 +160,13 @@ public class InsteadPayMessageBean {
         this.trans_amt = "100";
         this.remark = "测试";
     }
+
+	/**
+	 * 
+	 */
+	public InsteadPayTradeBean() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
     
 }
