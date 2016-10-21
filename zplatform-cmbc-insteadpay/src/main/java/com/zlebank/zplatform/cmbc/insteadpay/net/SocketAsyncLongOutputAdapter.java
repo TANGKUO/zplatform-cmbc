@@ -237,6 +237,7 @@ public class SocketAsyncLongOutputAdapter {
 				OutputStream output = socket.getOutputStream();
 				output.write(heartbeatMessage.getBytes(charset));
 				output.flush();
+				logger.info("cmbc insteadpay heart message");
 			}
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage(), e);

@@ -15,15 +15,22 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.utils.BeanCopyUtil;
+import com.zlebank.zplatform.cmbc.common.utils.Constant;
+import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
+import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayResultBean;
 import com.zlebank.zplatform.cmbc.insteadpay.net.MessageConfigService;
 import com.zlebank.zplatform.cmbc.insteadpay.net.MessageHandler;
 import com.zlebank.zplatform.cmbc.insteadpay.net.SocketAsyncLongOutputAdapter;
@@ -43,6 +50,9 @@ import com.zlebank.zplatform.cmbc.insteadpay.service.CMBCInsteadPayService;
 public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CMBCInsteadPayServiceImpl.class);
+	
+	@Autowired
+	private TxnsCmbcInstPayLogDAO txnsCmbcInstPayLogDAO;
 	/**
 	 *
 	 * @param realTimePayBean
@@ -59,18 +69,17 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 			executors.execute(new Runnable() {
 				@Override
 				public void run() {
-					while (true) {
-						try {
-							byte[] bytes = adapter.getMessageHandler().pack(realTimePayBean);
-							if (bytes != null) {
-								adapter.getSendQueue().put(bytes);
-							} else {
-								logger.error("打包失败:{}", new Object[] { JSON.toJSONString(realTimePayBean) });
-							}
-							Thread.sleep(60 * 1000);
-						} catch (Exception e) {
-							logger.error(e.getMessage(), e);
+					try {
+						byte[] bytes = adapter.getMessageHandler().pack(realTimePayBean);
+						if (bytes != null) {
+							adapter.getSendQueue().put(bytes);
+							
+						} else {
+							logger.error("打包失败:{}", new Object[] { JSON.toJSONString(realTimePayBean) });
 						}
+						TimeUnit.SECONDS.sleep(30);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
 					}
 				}
 			});
@@ -100,6 +109,10 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 								 * 1.代付结果
 								 * 2.代付查询结果
 								 */
+								if(Constant.REALTIME_INSTEADPAY.equals(dataContainer.get("messagecode").toString())){
+									RealTimePayResultBean realTimePayResultBean = (RealTimePayResultBean) dataContainer.get("result");
+									txnsCmbcInstPayLogDAO.updateInsteadPayResult(BeanCopyUtil.copyBean(CMBCRealTimeInsteadPayResultBean.class, realTimePayResultBean));
+								}
 							}
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);

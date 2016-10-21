@@ -12,6 +12,7 @@ package com.zlebank.zplatform.cmbc.insteadpay.service;
 
 import com.zlebank.zplatform.cmbc.common.bean.InsteadPayTradeBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 
 /**
  * 民生代付接口（实时代付和批量代付）
@@ -27,7 +28,7 @@ public interface InsteadPayService {
 	 * 
 	 * @return
 	 */
-	public ResultBean realTimeSingleInsteadPay(InsteadPayTradeBean insteadPayTradeBean);
+	public ResultBean realTimeSingleInsteadPay(InsteadPayTradeBean insteadPayTradeBean) throws CMBCTradeException;
 	
 	/**
 	 * 批量代付代付
@@ -43,4 +44,11 @@ public interface InsteadPayService {
 	 * @return 
 	 */
 	public ResultBean queryRealTimeInsteadPay(String ori_tran_date,String ori_tran_id);
+	
+	/**
+	 * 
+	 * @param tranId
+	 * @return
+	 */
+	public ResultBean dealWithInsteadPay(String tranId);
 }

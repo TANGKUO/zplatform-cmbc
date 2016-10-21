@@ -26,6 +26,7 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.google.common.base.Charsets;
 import com.zlebank.zplatform.cmbc.common.bean.InsteadPayTradeBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.consumer.enums.InsteadPayTagsEnum;
 import com.zlebank.zplatform.cmbc.consumer.enums.WithholdingTagsEnum;
 import com.zlebank.zplatform.cmbc.insteadpay.service.InsteadPayCacheResultService;
@@ -61,8 +62,8 @@ public class InsteadPayListener implements MessageListenerConcurrently{
 		for (MessageExt msg : msgs) {
 			if (msg.getTopic().equals(RESOURCE.getString("cmbc.insteadpay.subscribe"))) {
 				InsteadPayTagsEnum insteadPayTagsEnum = InsteadPayTagsEnum.fromValue(msg.getTags());
-				switch (insteadPayTagsEnum) {
-					case INSTEADPAY_REALTIME:
+				if (insteadPayTagsEnum==InsteadPayTagsEnum.INSTEADPAY_REALTIME) {
+					
 						String json = new String(msg.getBody(), Charsets.UTF_8);
 						log.info("接收到的MSG:" + json);
 						log.info("接收到的MSGID:" + msg.getMsgId());
@@ -72,15 +73,16 @@ public class InsteadPayListener implements MessageListenerConcurrently{
 							break;
 						}
 						ResultBean resultBean = null;
-						resultBean = insteadPayService.realTimeSingleInsteadPay(tradeBean);
+						try {
+							resultBean = insteadPayService.realTimeSingleInsteadPay(tradeBean);
+						} catch (CMBCTradeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							resultBean = new ResultBean(e.getCode(), e.getMessage());
+						}
 						insteadPayCacheResultService.saveInsteadPayResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
 						break;
-					case QUERY_INSTEADPAY_REALTIME:
-						log.info(new String(msg.getBody(), Charsets.UTF_8));
-						log.info(msg.getMsgId());
-						break;
-					default:
-						break;
+					
 				}
 
 			}
