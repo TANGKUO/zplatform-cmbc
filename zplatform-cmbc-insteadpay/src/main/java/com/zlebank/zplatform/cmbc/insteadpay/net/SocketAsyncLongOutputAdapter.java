@@ -12,6 +12,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.security.CryptoUtil;
 
 /**
@@ -51,11 +52,18 @@ public class SocketAsyncLongOutputAdapter {
 	 * 允许运行标识
 	 */
 	private volatile boolean canRun = true;
+	
+	private volatile boolean canRun_heart = false;
 
 	/**
 	 * socket客户端对象
 	 */
 	private final SocketHelper socketHelper = new SocketHelper();
+	
+	private static SocketAsyncLongOutputAdapter adapter = null; 
+	
+	
+	
 	/**
 	 * 启动
 	 */
@@ -63,25 +71,28 @@ public class SocketAsyncLongOutputAdapter {
 		/**
 		 * 运行链接检测线程
 		 */
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (canRun) {
-					try {
-						if (messageConfigService.getBoolean("CAN_RUN")) {
-							int interval = messageConfigService.getInt("HEARTBEAT_INTERVAL", 30) * 1000;// 心跳间隔，单位：秒
-							checkConnect(interval);
-							Thread.sleep(interval);
-						} else {
-							int interval = messageConfigService.getInt("RUN_CHECK_INTERVAL", 3) * 60 * 1000;// 运行检测间隔，单位：分
-							Thread.sleep(interval);
+		
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (canRun) {
+						try {
+							if (messageConfigService.getBoolean("CAN_RUN")) {
+								int interval = messageConfigService.getInt("HEARTBEAT_INTERVAL", 30) * 1000;// 心跳间隔，单位：秒
+								checkConnect(interval);
+								Thread.sleep(interval);
+							} else {
+								int interval = messageConfigService.getInt("RUN_CHECK_INTERVAL", 3) * 60 * 1000;// 运行检测间隔，单位：分
+								Thread.sleep(interval);
+							}
+						} catch (Exception e) {
+							logger.error(e.getLocalizedMessage(), e);
+							canRun_heart = false;
 						}
-					} catch (Exception e) {
-						logger.error(e.getLocalizedMessage(), e);
 					}
 				}
-			}
-		}).start();
+			}).start();
+		
 		/**
 		 * 运行报文发送线程
 		 */
@@ -168,7 +179,7 @@ public class SocketAsyncLongOutputAdapter {
 				socket.setKeepAlive(true);
 				socket.setTcpNoDelay(true);
 				socket.setOOBInline(true);
-				// socket.setSoTimeout(timeout);// 不能设置读超时
+				//socket.setSoTimeout(timeout);// 不能设置读超时
 				socket.connect(new InetSocketAddress(hostAddress, hostPort), connetTimeout);
 				logger.info("对端[{}-{}:{}]连接成功，本地端口[{}]", new Object[] { hostName, hostAddress, hostPort, socket.getLocalPort() });
 				socketHelper.setSocket(socket);
@@ -203,6 +214,7 @@ public class SocketAsyncLongOutputAdapter {
 	private void close() {
 		socketHelper.setReceivedBytes(null);// 清除已经保存的粘包块
 		Socket socket = socketHelper.getSocket();
+		logger.info("socket[{}]:[{{}}]关闭",socket.getInetAddress().getHostAddress(),socket.getLocalPort());
 		if (socket != null) {
 			try {
 				socket.close();
@@ -212,6 +224,7 @@ public class SocketAsyncLongOutputAdapter {
 		}
 		socketHelper.setSocket(null);
 		socketHelper.setLastActiveTime(null);
+		this.stop();
 	}
 
 	/**
@@ -237,7 +250,7 @@ public class SocketAsyncLongOutputAdapter {
 				OutputStream output = socket.getOutputStream();
 				output.write(heartbeatMessage.getBytes(charset));
 				output.flush();
-				logger.info("cmbc insteadpay heart message");
+				logger.info("cmbc insteadpay heart message;socket[{}]:[{}]",socket.getInetAddress().getHostAddress(),socket.getLocalPort());
 			}
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage(), e);
@@ -302,7 +315,7 @@ public class SocketAsyncLongOutputAdapter {
 	 * @param socketHelper
 	 */
 	private void receiveMessage() {
-		while (socketHelper.getSocket() == null) {
+		if(socketHelper.getSocket() == null) {
 			if (!messageConfigService.getBoolean("CAN_RUN")) {
 				return;
 			}
@@ -343,7 +356,7 @@ public class SocketAsyncLongOutputAdapter {
 			String headMsg = new String(ArrayUtils.subarray(bytes, 0, headLength), charset);
 			int bodyLength = NumberUtils.toInt(headMsg);
 			if (bodyLength <= 0 || bodyLength > maxSingleLength * 1024) {
-				logger.error("连接[{} --> {}-{}:{}]出现账数据，自动断链：{}", new Object[] { socketKey, hostName, hostAddress, hostPort, headMsg });
+				logger.error("连接[{} --> {}-{}:{}]出现脏数据，自动断链：{}", new Object[] { socketKey, hostName, hostAddress, hostPort, headMsg });
 				this.close();
 				return;
 			}

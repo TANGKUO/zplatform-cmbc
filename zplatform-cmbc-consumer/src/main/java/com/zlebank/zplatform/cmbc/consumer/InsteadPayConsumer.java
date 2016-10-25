@@ -26,6 +26,7 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
 import com.zlebank.zplatform.cmbc.consumer.enums.InsteadPayTagsEnum;
+import com.zlebank.zplatform.cmbc.insteadpay.net.SocketAsyncLongOutputAdapter;
 
 /**
  * Class Description
@@ -77,6 +78,7 @@ public class InsteadPayConsumer implements ApplicationListener<ContextRefreshedE
 		if (event.getApplicationContext().getParent() == null) {
 			try {
 				startConsume();
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

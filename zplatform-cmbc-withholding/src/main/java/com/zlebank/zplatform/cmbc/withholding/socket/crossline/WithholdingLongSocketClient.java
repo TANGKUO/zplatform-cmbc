@@ -107,6 +107,8 @@ public class WithholdingLongSocketClient extends BaseClient implements Client {
         socket.setKeepAlive(true);// 开启保持活动状态的套接字
         socket.setSoTimeout(timeout);// 设置超时时间
         log.info("本地端口：" + socket.getLocalPort());
+        
+        log.info("WithholdingLongSocketClient socket[{}]:{{}}",socket.getInetAddress().getHostAddress(),socket.getLocalPort());
         lastSendTime = System.currentTimeMillis();
         running = true;
         new Thread(new KeepAliveWatchDog()).start();

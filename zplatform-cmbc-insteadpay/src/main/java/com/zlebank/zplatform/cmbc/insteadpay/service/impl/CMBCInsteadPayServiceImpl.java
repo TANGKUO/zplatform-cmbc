@@ -10,11 +10,9 @@
  */
 package com.zlebank.zplatform.cmbc.insteadpay.service.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,11 +29,7 @@ import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayResultBean;
-import com.zlebank.zplatform.cmbc.insteadpay.net.MessageConfigService;
-import com.zlebank.zplatform.cmbc.insteadpay.net.MessageHandler;
 import com.zlebank.zplatform.cmbc.insteadpay.net.SocketAsyncLongOutputAdapter;
-import com.zlebank.zplatform.cmbc.insteadpay.net.TestSocketClient;
-import com.zlebank.zplatform.cmbc.insteadpay.net.XMLMessageUtil;
 import com.zlebank.zplatform.cmbc.insteadpay.service.CMBCInsteadPayService;
 
 /**
@@ -73,11 +67,9 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 						byte[] bytes = adapter.getMessageHandler().pack(realTimePayBean);
 						if (bytes != null) {
 							adapter.getSendQueue().put(bytes);
-							
 						} else {
 							logger.error("打包失败:{}", new Object[] { JSON.toJSONString(realTimePayBean) });
 						}
-						TimeUnit.SECONDS.sleep(30);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -112,6 +104,7 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 								if(Constant.REALTIME_INSTEADPAY.equals(dataContainer.get("messagecode").toString())){
 									RealTimePayResultBean realTimePayResultBean = (RealTimePayResultBean) dataContainer.get("result");
 									txnsCmbcInstPayLogDAO.updateInsteadPayResult(BeanCopyUtil.copyBean(CMBCRealTimeInsteadPayResultBean.class, realTimePayResultBean));
+									break;
 								}
 							}
 						} catch (Exception e) {

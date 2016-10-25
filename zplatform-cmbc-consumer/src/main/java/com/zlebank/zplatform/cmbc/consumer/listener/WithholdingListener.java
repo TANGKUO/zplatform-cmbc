@@ -62,27 +62,26 @@ public class WithholdingListener implements MessageListenerConcurrently{
 		for (MessageExt msg : msgs) {
 			if (msg.getTopic().equals(RESOURCE.getString("cmbc.withholding.subscribe"))) {
 				WithholdingTagsEnum withholdingTagsEnum = WithholdingTagsEnum.fromValue(msg.getTags());
-				switch (withholdingTagsEnum) {
-					case WITHHOLDING:
-						String json = new String(msg.getBody(), Charsets.UTF_8);
-						log.info("接收到的MSG:" + json);
-						log.info("接收到的MSGID:" + msg.getMsgId());
-						TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
-						if (tradeBean == null) {
-							log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
-							break;
-						}
-						ResultBean resultBean = null;
+				if(withholdingTagsEnum == WithholdingTagsEnum.WITHHOLDING){
+					String json = new String(msg.getBody(), Charsets.UTF_8);
+					log.info("接收到的MSG:" + json);
+					log.info("接收到的MSGID:" + msg.getMsgId());
+					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
+					if (tradeBean == null) {
+						log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
+						break;
+					}
+					ResultBean resultBean = null;
+					try {
 						resultBean = cmbcZlebankWithholdingService.withholding(tradeBean);
 						withholdingCacheResultService.saveWithholdingResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
-						break;
-					case QUERY_TRADE:
-						log.info(new String(msg.getBody(), Charsets.UTF_8));
-						log.info(msg.getMsgId());
-						break;
-					default:
-						break;
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						resultBean = new ResultBean("T000", e.getLocalizedMessage());
+					}
 				}
+				
 
 			}
 			log.info(Thread.currentThread().getName()+ " Receive New Messages: " + msgs);

@@ -28,6 +28,7 @@ import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
+import com.zlebank.zplatform.cmbc.dao.InsteadPayRealtimeDAO;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
@@ -60,6 +61,9 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 	private RspmsgDAO rspmsgDAO;
 	@Autowired
 	private TradeAccountingService tradeAccountingService;
+	@Autowired
+	private InsteadPayRealtimeDAO insteadPayRealtimeDAO;
+	
 	/**
 	 *
 	 * @param insteadPayTradeBean
@@ -96,6 +100,11 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 		ResultBean resultBean = cmbcInsteadPayService.realTimeInsteadPay(realTimePayBean);
 		txnsLogDAO.updateTradeStatFlag(txnsLog.getTxnseqno(), TradeStatFlagEnum.PAYING);
 		resultBean = queryResult(payPartyBean.getPayordno());
+		if(resultBean.isResultBool()){
+			insteadPayRealtimeDAO.updateInsteadSuccess(insteadPayTradeBean.getTxnseqno());
+		}else{
+			//insteadPayRealtimeDAO.updateInsteadFail(insteadPayTradeBean.getTxnseqno(), resultBean.getErrCode(), resultBean.getErrMsg());
+		}
 		dealWithInsteadPay(payPartyBean.getPayordno());
 		return resultBean;
 	}
@@ -167,6 +176,8 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 		payPartyBean.setPayretcode(cmbcInstPayLog.getRespCode());
         payPartyBean.setPayretinfo(cmbcInstPayLog.getRespMsg());
         txnsLogDAO.updateCMBCTradeData(payPartyBean);
+        //AppPartyBean appParty = new AppPartyBean("","000000000000", commiteTime,DateUtil.getCurrentDateTime(), txnseqno, "");
+        txnsLogDAO.updateAppInfo(cmbcInstPayLog.getTxnseqno());
         tradeAccountingService.accountingFor(cmbcInstPayLog.getTxnseqno());
 		return null;
 	}

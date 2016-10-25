@@ -79,10 +79,11 @@ public class InsteadPayListener implements MessageListenerConcurrently{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							resultBean = new ResultBean(e.getCode(), e.getMessage());
+						}catch (Throwable e) {
+							// TODO: handle exception
+							resultBean = new ResultBean("T000", e.getMessage());
 						}
 						insteadPayCacheResultService.saveInsteadPayResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
-						break;
-					
 				}
 
 			}

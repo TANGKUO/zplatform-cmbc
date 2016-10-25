@@ -10,7 +10,6 @@
  */
 package com.zlebank.zplatform.cmbc.dao;
 
-import java.util.List;
 import java.util.Map;
 
 import com.zlebank.zplatform.cmbc.common.bean.PayPartyBean;
@@ -67,5 +66,9 @@ public interface TxnsLogDAO extends BaseDAO<PojoTxnsLog>{
 	 */
 	public Map<String, Object> getCardInfo(String cardNo);
 	
-	
+	/**
+	 * 更新应用方信息
+	 * @param txnseqno
+	 */
+	public void updateAppInfo(String txnseqno);
 }

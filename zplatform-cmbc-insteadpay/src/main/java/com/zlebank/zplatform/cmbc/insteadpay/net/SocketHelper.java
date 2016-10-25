@@ -10,6 +10,7 @@ import java.util.Date;
  * @author linda1@cmbc.com.cn<br>
  */
 public class SocketHelper {
+	private static SocketHelper socketHelper = null;
 	/**
 	 * socket关键字
 	 */
@@ -88,5 +89,12 @@ public class SocketHelper {
 	 */
 	public void setReceivedBytes(byte[] receivedBytes) {
 		this.receivedBytes = receivedBytes;
+	}
+	
+	public static synchronized SocketHelper getInstance(){
+		if(socketHelper==null){
+			socketHelper = new SocketHelper();
+		}
+		return socketHelper;
 	}
 }

@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * Class Description
@@ -30,6 +32,7 @@ import org.apache.commons.lang.math.NumberUtils;
  */
 public class Constant {
 
+	private static final Logger log = LoggerFactory.getLogger(Constant.class);
 	public static final String REALNAMEAUTH = "1004";
     public static final String REALNAMEAUTHQUERY = "3004";
     public static final String WITHHOLDING = "1003";
@@ -88,6 +91,7 @@ public class Constant {
 					try {
 						refresh();
 						int interval = NumberUtils.toInt(refresh_interval, 60) * 1000;// 刷新间隔，单位：秒
+						log.info("refresh Constant datetime:"+DateUtil.getCurrentDateTime());
 						Thread.sleep(interval);
 					} catch (Exception e) {
 						e.printStackTrace();

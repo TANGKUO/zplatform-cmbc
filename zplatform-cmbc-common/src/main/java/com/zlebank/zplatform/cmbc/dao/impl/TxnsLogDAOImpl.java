@@ -164,6 +164,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 	 * @return
 	 */
 	@Override
+	@Transactional(readOnly=true)
 	public Map<String, Object> getCardInfo(String cardNo){
 		StringBuffer sqlBuffer = new StringBuffer();
         sqlBuffer.append("SELECT type,bankcode,bankname ");
@@ -184,5 +185,23 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
             return routList.get(0);
         }
 		return null;
+	}
+
+	/**
+	 *
+	 * @param txnseqno
+	 */
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+	public void updateAppInfo(String txnseqno) {
+		// TODO Auto-generated method stub
+		String hql = "update PojoTxnsLog set appinst=?,appordcommitime=?,appordno=? where txnseqno = ?";
+		 Query query = getSession().createQuery(hql);
+		 query.setParameter(0, "000000000000");
+		 query.setParameter(1, DateUtil.getCurrentDateTime());
+		 query.setParameter(2, "");
+		 query.setParameter(3, txnseqno);
+		 int rows = query.executeUpdate();
+		 log.info("updateAppInfo() effect rows:" + rows);
 	}
 }
