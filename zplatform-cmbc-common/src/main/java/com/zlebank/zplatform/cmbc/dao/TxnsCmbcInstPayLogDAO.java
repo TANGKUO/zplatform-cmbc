@@ -11,6 +11,7 @@
 package com.zlebank.zplatform.cmbc.dao;
 
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
 
 
@@ -46,4 +47,10 @@ public interface TxnsCmbcInstPayLogDAO {
 	 * @param realTimePayResultBean
 	 */
 	public void updateInsteadPayResult(CMBCRealTimeInsteadPayResultBean realTimePayResultBean);
+	
+	/**
+	 * 更新代付退汇结果
+	 * @param reexchangeBean 退汇bean
+	 */
+	public void updateReexchangeResult(SingleReexchangeBean reexchangeBean);
 }

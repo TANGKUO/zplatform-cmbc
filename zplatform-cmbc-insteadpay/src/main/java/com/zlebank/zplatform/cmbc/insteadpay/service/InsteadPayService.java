@@ -12,6 +12,7 @@ package com.zlebank.zplatform.cmbc.insteadpay.service;
 
 import com.zlebank.zplatform.cmbc.common.bean.InsteadPayTradeBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 
 /**
@@ -51,4 +52,10 @@ public interface InsteadPayService {
 	 * @return
 	 */
 	public ResultBean dealWithInsteadPay(String tranId);
+	
+	/**
+	 * 实时代付退汇处理
+	 * @param reexchangeBean
+	 */
+	public void reexchange(SingleReexchangeBean reexchangeBean) throws CMBCTradeException;
 }

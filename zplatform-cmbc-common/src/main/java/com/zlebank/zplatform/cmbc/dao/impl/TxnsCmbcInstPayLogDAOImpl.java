@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
@@ -76,6 +77,27 @@ public class TxnsCmbcInstPayLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsCmbc
 		int rows = query.executeUpdate();
 		//PojoRspmsg rspmsg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, realTimePayResultBean.getResp_code());
 		log.info("updateInsteadPayResult() effect rows:"+rows);
+	}
+
+	/**
+	 *
+	 * @param reexchangeBean
+	 */
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void updateReexchangeResult(SingleReexchangeBean reexchangeBean) {
+		// TODO Auto-generated method stub
+		String hql = "update PojoTxnsCmbcInstPayLog set respType = ?,respCode = ?,respMsg = ?,bankTranId = ?,bankTranDate = ? where tranId = ?";
+		Query query = getSession().createQuery(hql);
+		query.setParameter(0, reexchangeBean.getRespType());
+		query.setParameter(1, reexchangeBean.getRespCode());
+		query.setParameter(2, reexchangeBean.getRespMsg());
+		query.setParameter(3, reexchangeBean.getBankTranId());
+		query.setParameter(4, reexchangeBean.getBankBillDate());
+		query.setParameter(5, reexchangeBean.getTranId());
+		int rows = query.executeUpdate();
+		//PojoRspmsg rspmsg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, realTimePayResultBean.getResp_code());
+		log.info("updateReexchangeResult() effect rows:"+rows);
 	}
 	
 

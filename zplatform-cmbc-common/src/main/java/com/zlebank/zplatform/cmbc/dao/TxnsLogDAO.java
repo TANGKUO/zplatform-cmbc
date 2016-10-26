@@ -71,4 +71,12 @@ public interface TxnsLogDAO extends BaseDAO<PojoTxnsLog>{
 	 * @param txnseqno
 	 */
 	public void updateAppInfo(String txnseqno);
+	
+	/**
+	 * 更新民生代付退汇结果
+	 * @param txnseqno 交易序列号
+	 * @param retCode 应答码
+	 * @param retMsg 应答信息
+	 */
+	public void updateCMBCReexchange(String txnseqno,String retCode,String retMsg);
 }

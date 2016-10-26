@@ -28,5 +28,11 @@ public interface InsteadPayRealtimeDAO extends BaseDAO<PojoInsteadPayRealtime>  
 	 */
 	public void updateInsteadFail(String txnseqno, String retCode, String retMsg);
 	
-	
+	/**
+	 * 更新代付订单为退汇状态
+	 * @param txnseqno 交易序列号
+	 * @param retCode 应答码
+	 * @param retMsg 应答信息
+	 */
+	public void updateInsteadReexchange(String txnseqno, String retCode, String retMsg);
 }

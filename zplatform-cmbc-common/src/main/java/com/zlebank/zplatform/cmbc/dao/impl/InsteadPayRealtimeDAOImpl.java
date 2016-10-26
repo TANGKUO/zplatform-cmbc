@@ -61,5 +61,27 @@ public class InsteadPayRealtimeDAOImpl extends
 		log.info("updateInsteadSuccess() effect rows:"+rows);
 	}
 
+	/**
+	 *
+	 * @param txnseqno
+	 * @param retCode
+	 * @param retMsg
+	 */
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+	public void updateInsteadReexchange(String txnseqno, String retCode,
+			String retMsg) {
+		// TODO Auto-generated method stub
+		String hql = "update PojoInsteadPayRealtime set status = ?,retCode = ?,retInfo = ?,updateTime = ? where txnseqno = ?";
+		Query query = getSession().createQuery(hql);
+		query.setParameter(0, "05");
+		query.setParameter(1, retCode);
+		query.setParameter(2, retMsg);
+		query.setParameter(3, new Date());
+		query.setParameter(4, txnseqno);
+		int rows = query.executeUpdate();
+		log.info("updateInsteadSuccess() effect rows:"+rows);
+	}
+
 	
 }

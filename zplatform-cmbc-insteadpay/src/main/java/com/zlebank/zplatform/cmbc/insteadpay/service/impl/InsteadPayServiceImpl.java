@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.zlebank.zplatform.cmbc.common.bean.InsteadPayTradeBean;
 import com.zlebank.zplatform.cmbc.common.bean.PayPartyBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.enums.ChannelEnmu;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
 import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
@@ -36,6 +37,8 @@ import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
 import com.zlebank.zplatform.cmbc.insteadpay.service.CMBCInsteadPayService;
 import com.zlebank.zplatform.cmbc.insteadpay.service.InsteadPayService;
 import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
+import com.zlebank.zplatform.task.service.TradeNotifyService;
+import com.zlebank.zplatform.trade.acc.service.InsteadPayAccountingService;
 import com.zlebank.zplatform.trade.acc.service.TradeAccountingService;
 
 /**
@@ -63,7 +66,10 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 	private TradeAccountingService tradeAccountingService;
 	@Autowired
 	private InsteadPayRealtimeDAO insteadPayRealtimeDAO;
-	
+	@Autowired
+	private TradeNotifyService tradeNotifyService;
+	@Autowired
+	private InsteadPayAccountingService insteadPayAccountingService;
 	/**
 	 *
 	 * @param insteadPayTradeBean
@@ -179,7 +185,36 @@ public class InsteadPayServiceImpl implements InsteadPayService {
         //AppPartyBean appParty = new AppPartyBean("","000000000000", commiteTime,DateUtil.getCurrentDateTime(), txnseqno, "");
         txnsLogDAO.updateAppInfo(cmbcInstPayLog.getTxnseqno());
         tradeAccountingService.accountingFor(cmbcInstPayLog.getTxnseqno());
+        if("S".equals(cmbcInstPayLog.getRespType())){
+        	tradeNotifyService.notify(cmbcInstPayLog.getTxnseqno());
+        }
 		return null;
+	}
+
+	/**
+	 *
+	 * @param reexchangeBean
+	 * @throws CMBCTradeException 
+	 */
+	@Override
+	public void reexchange(SingleReexchangeBean reexchangeBean) throws CMBCTradeException {
+		// TODO Auto-generated method stub
+		/**
+		 * 退汇流程：
+		 * 1.根据流水号查询民生实时代付流水数据，有无此交易
+		 * 2.由民生代付流水取得交易序列号，以此取得交易日志，代付订单
+		 * 3.更新代付订单表 状态 05 退汇， 交易流水 中心应答码使用02HH，应答信息:交易失败，详情请咨询证联金融客服010-84298418
+		 * 4.退汇账务处理
+		 */
+		PojoTxnsCmbcInstPayLog cmbcInstPayLog = txnsCmbcInstPayLogDAO.queryByTranId(reexchangeBean.getTranId());
+		if(cmbcInstPayLog==null){
+			throw new CMBCTradeException("");
+		}
+		txnsLogDAO.updateCMBCReexchange(cmbcInstPayLog.getTxnseqno(), reexchangeBean.getRespCode(), reexchangeBean.getRespMsg());
+		insteadPayRealtimeDAO.updateInsteadReexchange(cmbcInstPayLog.getTxnseqno(), reexchangeBean.getRespCode(), reexchangeBean.getRespMsg());
+		txnsCmbcInstPayLogDAO.updateReexchangeResult(reexchangeBean);
+		//账务处理
+		insteadPayAccountingService.reexchangeAccounting(cmbcInstPayLog.getTxnseqno());
 	}
 
 }

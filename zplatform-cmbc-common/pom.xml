@@ -110,5 +110,10 @@
 			<artifactId>zkclient</artifactId>
 			<version>0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.zlebank.zplatform</groupId>
+			<artifactId>zplatform-task-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

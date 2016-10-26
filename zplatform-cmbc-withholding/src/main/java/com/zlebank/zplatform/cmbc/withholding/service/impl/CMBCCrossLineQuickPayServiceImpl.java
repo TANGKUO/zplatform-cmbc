@@ -23,7 +23,6 @@ import com.zlebank.zplatform.cmbc.common.enums.ChannelEnmu;
 import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
@@ -35,6 +34,7 @@ import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCRealNameAuthService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
+import com.zlebank.zplatform.task.service.TradeNotifyService;
 import com.zlebank.zplatform.trade.acc.service.TradeAccountingService;
 
 /**
@@ -58,8 +58,8 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 	private TxnsOrderinfoDAO txnsOrderinfoDAO;
 	@Autowired
 	private TxnsWithholdingService txnsWithholdingService;
-	//@Autowired
-	//private TradeNotifyService tradeNotifyService;
+	@Autowired
+	private TradeNotifyService tradeNotifyService;
 	@Autowired
 	private SerialNumberService serialNumberService;
 	@Autowired
@@ -148,6 +148,9 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
         payPartyBean.setPayretinfo(withholding.getExecmsg());
         txnsLogDAO.updateCMBCTradeData(payPartyBean);
         tradeAccountingService.accountingFor(txnseqno);
+        if(withholding.getExectype().equals("S")){
+        	tradeNotifyService.notify(txnseqno);
+        }
         //txnsLogDAO.updatePayInfo_Fast(payPartyBean);
         //更新交易流水中心应答信息
         //txnsLogDAO.updateCMBCWithholdingRetInfo(txnseqno, withholding);

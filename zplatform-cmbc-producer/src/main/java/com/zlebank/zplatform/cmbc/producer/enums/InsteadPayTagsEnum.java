@@ -37,7 +37,11 @@ public enum InsteadPayTagsEnum {
 	/**
 	 * 民生实时代付-查询
 	 */
-	QUERY_INSTEADPAY_REALTIME("TAG_IP_004");
+	QUERY_INSTEADPAY_REALTIME("TAG_IP_004"),
+	/**
+	 * 民生实时代付退汇
+	 */
+	INSTEADPAY_REALTIME_REEXCHANGE("TAG_IP_005");
 	private String code;
 
 	/**

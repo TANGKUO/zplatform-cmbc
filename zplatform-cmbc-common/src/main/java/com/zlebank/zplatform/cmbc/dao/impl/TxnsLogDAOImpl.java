@@ -204,4 +204,17 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 		 int rows = query.executeUpdate();
 		 log.info("updateAppInfo() effect rows:" + rows);
 	}
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+	public void updateCMBCReexchange(String txnseqno,String retCode,String retMsg){
+		String hql = "update PojoTxnsLog set payretcode = ?,payretinfo = ?,retcode = ?,retinfo = ? where txnseqno = ?";
+		 Query query = getSession().createQuery(hql);
+		 query.setParameter(0, retCode);
+		 query.setParameter(1, retMsg);
+		 query.setParameter(2, "02HH");
+		 query.setParameter(3, "交易失败，详情请咨询证联金融客服010-84298418");
+		 query.setParameter(4, txnseqno);
+		 int rows = query.executeUpdate();
+		 log.info("updateAppInfo() effect rows:" + rows);
+	}
 }
