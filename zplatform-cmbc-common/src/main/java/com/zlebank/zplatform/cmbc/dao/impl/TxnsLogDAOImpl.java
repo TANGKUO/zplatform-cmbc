@@ -63,7 +63,11 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 	public PojoTxnsLog getTxnsLogByTxnseqno(String txnseqno) {
 		Criteria criteria = getSession().createCriteria(PojoTxnsLog.class);
 		criteria.add(Restrictions.eq("txnseqno", txnseqno));
-		return (PojoTxnsLog) criteria.uniqueResult();
+		PojoTxnsLog txnsLog = (PojoTxnsLog) criteria.uniqueResult();
+		if(txnsLog==null){
+			getSession().evict(txnsLog);
+		}
+		return txnsLog;
 	}
 
 	/**
@@ -216,5 +220,15 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 		 query.setParameter(4, txnseqno);
 		 int rows = query.executeUpdate();
 		 log.info("updateAppInfo() effect rows:" + rows);
+	}
+
+	/**
+	 *
+	 * @param txnsLog
+	 */
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+	public void saveTxnsLog(PojoTxnsLog txnsLog) {
+		saveEntity(txnsLog);
 	}
 }

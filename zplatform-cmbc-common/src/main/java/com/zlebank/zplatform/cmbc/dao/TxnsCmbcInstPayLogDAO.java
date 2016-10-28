@@ -10,6 +10,7 @@
  */
 package com.zlebank.zplatform.cmbc.dao;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
@@ -53,4 +54,10 @@ public interface TxnsCmbcInstPayLogDAO {
 	 * @param reexchangeBean 退汇bean
 	 */
 	public void updateReexchangeResult(SingleReexchangeBean reexchangeBean);
+	
+	/**
+	 * 更新实时代付查询结果
+	 * @param realTimePayResultBean
+	 */
+	public void updateInsteadPayQueryResult(CMBCRealTimeInsteadPayQueryResultBean cmbcRealTimeInsteadPayQueryResultBean);
 }

@@ -29,6 +29,8 @@ import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayResultBean;
+import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryBean;
+import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryResultBean;
 import com.zlebank.zplatform.cmbc.insteadpay.net.SocketAsyncLongOutputAdapter;
 import com.zlebank.zplatform.cmbc.insteadpay.service.CMBCInsteadPayService;
 
@@ -138,6 +140,77 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 	public ResultBean batchInsteadPay(String batchNo) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 *
+	 * @param queryBean
+	 */
+	@Override
+	public void queryInsteadPay(final RealTimeQueryBean queryBean) {
+		// TODO Auto-generated method stub
+		final SocketAsyncLongOutputAdapter adapter = new SocketAsyncLongOutputAdapter();
+		adapter.start();
+		int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						byte[] bytes = adapter.getMessageHandler().pack(queryBean);
+						if (bytes != null) {
+							adapter.getSendQueue().put(bytes);
+						} else {
+							logger.error("打包失败:{}", new Object[] { JSON.toJSONString(queryBean) });
+						}
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+		
+		// 初始化线程池
+		int resPoolSize = 1;// 线程池
+		executors = Executors.newFixedThreadPool(resPoolSize);
+		for (int i = 0; i < resPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					while (adapter.getMessageConfigService().getBoolean("CAN_RUN")) {
+						try {
+							byte[] bytes = adapter.getReceiveQueue().take();
+							Map<String, Object> dataContainer = adapter.getMessageHandler().unpack(bytes);
+							if (dataContainer == null) {
+								continue;
+							}
+							String respType = StringUtils.trimToNull((String) dataContainer.get("YHYDLX"));
+							if ("FAIL".equalsIgnoreCase(respType)) {
+								logger.error("解包失败:{}", new Object[] { dataContainer });
+							}else{
+								//具体业务处理代码
+								/*
+								 * 1.代付结果
+								 * 2.代付查询结果
+								 */
+								if(Constant.REALTIME_INSTEADPAY_QUERY.equals(dataContainer.get("messagecode").toString())){
+									RealTimeQueryResultBean realTimePayResultBean = (RealTimeQueryResultBean) dataContainer.get("result");
+									txnsCmbcInstPayLogDAO.updateInsteadPayResult(BeanCopyUtil.copyBean(CMBCRealTimeInsteadPayResultBean.class, realTimePayResultBean));
+									
+									break;
+								}
+							}
+						} catch (Exception e) {
+							logger.error(e.getMessage(), e);
+						}
+					}
+				}
+			});
+		}
+		executors.shutdown();
 	}
 
 }

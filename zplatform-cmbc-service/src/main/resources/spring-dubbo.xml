@@ -9,4 +9,6 @@
 	<dubbo:method name="accountingFor" async="true" return="false" retries="0" retry="0" timeout="30000"></dubbo:method>
 </dubbo:reference>
 <dubbo:reference id="tradeNotifyService" interface="com.zlebank.zplatform.task.service.TradeNotifyService" version="1.0" />
+<dubbo:reference id="insteadPayAccountingService" interface="com.zlebank.zplatform.trade.acc.service.InsteadPayAccountingService" version="1.0" />
+
 </beans>

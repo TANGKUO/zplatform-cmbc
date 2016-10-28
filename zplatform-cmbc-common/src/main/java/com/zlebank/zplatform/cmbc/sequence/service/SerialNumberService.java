@@ -31,4 +31,10 @@ public interface SerialNumberService {
 	 * @return
 	 */
 	public String generateCMBCInsteadPaySerialNo();
+	
+	/**
+	 * 生成交易序列号
+	 * @return
+	 */
+	public String generateTxnseqno();
 }

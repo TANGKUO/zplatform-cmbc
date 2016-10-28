@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCTradeQueueBean;
 import com.zlebank.zplatform.cmbc.common.bean.PayPartyBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
@@ -23,12 +24,14 @@ import com.zlebank.zplatform.cmbc.common.enums.ChannelEnmu;
 import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
+import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.dao.ProvinceDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsOrderinfoDAO;
+import com.zlebank.zplatform.cmbc.queue.service.TradeQueueService;
 import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
@@ -68,6 +71,8 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 	private CMBCRealNameAuthService cmbcRealNameAuthService;
 	@Autowired
 	private TradeAccountingService tradeAccountingService;
+	@Autowired
+	private TradeQueueService tradeQueueService;
 	
 	public ResultBean bankSign(TradeBean tradeBean){
 		
@@ -117,8 +122,21 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 				//更新订单状态
 	            txnsOrderinfoDAO.updateOrderToSuccess(tradeBean.getTxnseqno());
 			} else {// 交易失败
-				txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
-				resultBean = new ResultBean("T000", "交易失败");
+				if("R".equals(resultBean.getErrCode())){
+					PojoTxnsLog txnsLog = txnsLogDAO.getTxnsLogByTxnseqno(tradeBean.getTxnseqno());
+					CMBCTradeQueueBean queueBean = new CMBCTradeQueueBean();
+					queueBean.setTxnseqno(txnsLog.getTxnseqno());
+					queueBean.setPayInsti(ChannelEnmu.CMBCINSTEADPAY_REALTIME.getChnlcode());
+					queueBean.setBusiType(txnsLog.getBusitype());
+					queueBean.setTxnDateTime(txnsLog.getTxntime());
+					//加入交易查询队列
+					tradeQueueService.addInsteadPayQueue(queueBean);
+					return resultBean;
+				}else{
+					txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
+					resultBean = new ResultBean("T000", "交易失败");
+				}
+				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

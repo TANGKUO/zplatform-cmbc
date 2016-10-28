@@ -27,6 +27,7 @@ import com.google.common.base.Charsets;
 import com.zlebank.zplatform.cmbc.common.bean.InsteadPayTradeBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
+import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.consumer.enums.InsteadPayTagsEnum;
 import com.zlebank.zplatform.cmbc.consumer.enums.WithholdingTagsEnum;
@@ -101,6 +102,21 @@ public class InsteadPayListener implements MessageListenerConcurrently{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}catch (Throwable e) {
+						// TODO: handle exception
+					}
+				}else if(insteadPayTagsEnum==InsteadPayTagsEnum.QUERY_INSTEADPAY_REALTIME_ACCOUNTING){
+					String json = new String(msg.getBody(), Charsets.UTF_8);
+					log.info("接收到的MSG:" + json);
+					log.info("接收到的MSGID:" + msg.getMsgId());
+					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
+					if (tradeBean == null) {
+						log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
+						break;
+					}
+					
+					try {
+						insteadPayService.queryAndAccounting(tradeBean.getTxnseqno());
+					} catch (Throwable e) {
 						// TODO: handle exception
 					}
 				}

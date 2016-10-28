@@ -40,8 +40,7 @@ public class RealTimeQueryBean implements Serializable {
     public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final String SERVICECODE = "3002";
 
-    @XStreamAlias("COMPANY_ID")
-    private String companyId = "";// 合作方id
+    
     @XStreamAlias("MCHNT_CD")
     private String mchntCd = "";// 商户编号
     @XStreamAlias("TRAN_DATE")
@@ -57,20 +56,7 @@ public class RealTimeQueryBean implements Serializable {
     @XStreamAlias("RESV")
     private String resv = "";// 备用域
     
-    /**
-     * @return the companyId
-     */
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    /**
-     * @param companyId the companyId to set
-     */
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
-
+   
     /**
      * @return the mchntCd
      */
@@ -191,7 +177,7 @@ public class RealTimeQueryBean implements Serializable {
             String tranTime, String tranId, String oriTranDate,
             String oriTranId, String resv) {
         super();
-        this.companyId = companyId;
+       
         this.mchntCd = mchntCd;
         this.tranDate = tranDate;
         this.tranTime = tranTime;
@@ -202,7 +188,7 @@ public class RealTimeQueryBean implements Serializable {
     }
     public RealTimeQueryBean( String oriTranDate,String oriTranId) {
         super();
-        this.companyId = Constant.getInstance().getCmbc_insteadpay_merid();
+        
         this.mchntCd = "";
         this.tranDate = DateUtil.getCurrentDate();
         this.tranTime = DateUtil.getCurrentTime();
@@ -216,15 +202,7 @@ public class RealTimeQueryBean implements Serializable {
                 new XmlFriendlyNameCoder("_-", "_")));
         // xstream.processAnnotations(RealTimePayBean.class);
         xstream.autodetectAnnotations(true);
-        String xml = XMLHEAD + xstream.toXML(this);
-        Pattern p = Pattern.compile("\\s{2,}|\t|\r|\n");
-        Matcher m = p.matcher(xml);
-        xml = m.replaceAll("");
-        int xml_length = xml.getBytes().length;
-        DecimalFormat df = new DecimalFormat("000000");
-        String msgLength = df.format(xml_length);
-        String sign = CMBCAESUtils.encodeMD5(xml).toUpperCase();
-        String serviceMsg = SERVICECODE + "           ";
-        return msgLength + serviceMsg + xml + sign;
+        
+        return xstream.toXML(this);
     }
 }

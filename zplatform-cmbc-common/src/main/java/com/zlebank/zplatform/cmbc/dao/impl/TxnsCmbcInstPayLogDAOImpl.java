@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
@@ -98,6 +99,30 @@ public class TxnsCmbcInstPayLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsCmbc
 		int rows = query.executeUpdate();
 		//PojoRspmsg rspmsg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, realTimePayResultBean.getResp_code());
 		log.info("updateReexchangeResult() effect rows:"+rows);
+	}
+
+	/**
+	 *
+	 * @param cmbcRealTimeInsteadPayQueryResultBean
+	 */
+	@Override
+	public void updateInsteadPayQueryResult(
+			CMBCRealTimeInsteadPayQueryResultBean cmbcRealTimeInsteadPayQueryResultBean) {
+		// TODO Auto-generated method stub
+		String hql = "update PojoTxnsCmbcInstPayLog set respType = ?,respCode = ?,respMsg = ?,oriRespType = ?,oriRespCode = ?,oriRespMsg = ?,bankTranId = ?,bankTranDate = ? where tranId = ?";
+		Query query = getSession().createQuery(hql);
+		query.setParameter(0, cmbcRealTimeInsteadPayQueryResultBean.getResp_type());
+		query.setParameter(1, cmbcRealTimeInsteadPayQueryResultBean.getResp_code());
+		query.setParameter(2, cmbcRealTimeInsteadPayQueryResultBean.getResp_msg());
+		query.setParameter(3, cmbcRealTimeInsteadPayQueryResultBean.getOri_resp_type());
+		query.setParameter(4, cmbcRealTimeInsteadPayQueryResultBean.getOri_resp_code());
+		query.setParameter(5, cmbcRealTimeInsteadPayQueryResultBean.getOri_resp_msg());
+		query.setParameter(6, cmbcRealTimeInsteadPayQueryResultBean.getOri_bank_tran_id());
+		query.setParameter(7, cmbcRealTimeInsteadPayQueryResultBean.getOri_bank_tran_date());
+		query.setParameter(8, cmbcRealTimeInsteadPayQueryResultBean.getTran_id());
+		int rows = query.executeUpdate();
+		//PojoRspmsg rspmsg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, realTimePayResultBean.getResp_code());
+		log.info("updateInsteadPayResult() effect rows:"+rows);
 	}
 	
 

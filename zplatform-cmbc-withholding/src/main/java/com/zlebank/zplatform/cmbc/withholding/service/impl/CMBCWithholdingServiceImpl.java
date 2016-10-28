@@ -3,6 +3,7 @@ package com.zlebank.zplatform.cmbc.withholding.service.impl;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
     public ResultBean queryResult(String serialno) {
         PojoTxnsWithholding withholding = null;
         ResultBean resultBean = null;
-        int[] timeArray = new int[]{1000, 2000, 8000, 16000, 32000};
+        int[] timeArray = new int[]{1, 2, 8, 16, 32};
         try {
             for (int i = 0; i < 5; i++) {
                 withholding = txnsWithholdingService.getWithholdingBySerialNo(serialno);
@@ -101,7 +102,8 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
                         continue;
                     }
                 }
-                Thread.sleep(timeArray[i]);
+                //Thread.sleep(timeArray[i]);
+                TimeUnit.SECONDS.sleep(timeArray[i]);
             }
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block

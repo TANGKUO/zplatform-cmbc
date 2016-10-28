@@ -12,6 +12,7 @@ package com.zlebank.zplatform.cmbc.insteadpay.service;
 
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
+import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryBean;
 
 /**
  * 民生代付接口：实时单笔代付，批量代付（实时和非实时）
@@ -43,4 +44,11 @@ public interface CMBCInsteadPayService {
 	 * @return 结果bean
 	 */
 	public ResultBean batchInsteadPay(String batchNo);
+	
+	/**
+	 * 查询实时代付账务交易结果
+	 * @param queryBean 查询bean
+	 * 
+	 */
+	public void queryInsteadPay(RealTimeQueryBean queryBean);
 }

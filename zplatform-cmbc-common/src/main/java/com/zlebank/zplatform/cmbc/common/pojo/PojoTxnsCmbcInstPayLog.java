@@ -52,7 +52,13 @@ public class PojoTxnsCmbcInstPayLog implements java.io.Serializable {
 	private String txnseqno;
 	private String resResv;
 	private String reqResv;
-
+	private String oriTranDate;
+	private String oriTranId;
+	private String oriBankTranId;
+	private String oriBankTranDate;
+	private String oriRespType;
+	private String oriRespCode;
+	private String oriRespMsg;
 	public PojoTxnsCmbcInstPayLog() {
 	}
 
@@ -380,6 +386,68 @@ public class PojoTxnsCmbcInstPayLog implements java.io.Serializable {
 	public void setRemarkCd(String remarkCd) {
 		this.remarkCd = remarkCd;
 	}
-	
+	@Column(name = "ORI_TRAN_DATE", length = 8)
+	public String getOriTranDate() {
+		return this.oriTranDate;
+	}
+
+	public void setOriTranDate(String oriTranDate) {
+		this.oriTranDate = oriTranDate;
+	}
+
+	@Column(name = "ORI_TRAN_ID", length = 32)
+	public String getOriTranId() {
+		return this.oriTranId;
+	}
+
+	public void setOriTranId(String oriTranId) {
+		this.oriTranId = oriTranId;
+	}
+
+	@Column(name = "ORI_BANK_TRAN_ID", length = 32)
+	public String getOriBankTranId() {
+		return this.oriBankTranId;
+	}
+
+	public void setOriBankTranId(String oriBankTranId) {
+		this.oriBankTranId = oriBankTranId;
+	}
+
+	@Column(name = "ORI_BANK_TRAN_DATE", length = 8)
+	public String getOriBankTranDate() {
+		return this.oriBankTranDate;
+	}
+
+	public void setOriBankTranDate(String oriBankTranDate) {
+		this.oriBankTranDate = oriBankTranDate;
+	}
+
+	@Column(name = "ORI_RESP_TYPE", length = 1)
+	public String getOriRespType() {
+		return this.oriRespType;
+	}
+
+	public void setOriRespType(String oriRespType) {
+		this.oriRespType = oriRespType;
+	}
+
+	@Column(name = "ORI_RESP_CODE", length = 8)
+	public String getOriRespCode() {
+		return this.oriRespCode;
+	}
+
+	public void setOriRespCode(String oriRespCode) {
+		this.oriRespCode = oriRespCode;
+	}
+
+	@Column(name = "ORI_RESP_MSG", length = 512)
+	public String getOriRespMsg() {
+		return this.oriRespMsg;
+	}
+
+	public void setOriRespMsg(String oriRespMsg) {
+		this.oriRespMsg = oriRespMsg;
+	}
+
 
 }

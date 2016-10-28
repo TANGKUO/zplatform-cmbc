@@ -58,4 +58,10 @@ public interface InsteadPayService {
 	 * @param reexchangeBean
 	 */
 	public void reexchange(SingleReexchangeBean reexchangeBean) throws CMBCTradeException;
+	
+	/**
+	 * 查询并处理账务
+	 * @param txnseqno 交易序列号
+	 */
+	public void queryAndAccounting(String txnseqno);
 }

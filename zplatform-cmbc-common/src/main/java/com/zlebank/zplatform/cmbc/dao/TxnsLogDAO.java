@@ -79,4 +79,10 @@ public interface TxnsLogDAO extends BaseDAO<PojoTxnsLog>{
 	 * @param retMsg 应答信息
 	 */
 	public void updateCMBCReexchange(String txnseqno,String retCode,String retMsg);
+	
+	/**
+	 * 保存交易日志
+	 * @param txnsLog 交易日志pojo
+	 */
+	public void saveTxnsLog(PojoTxnsLog txnsLog);
 }
