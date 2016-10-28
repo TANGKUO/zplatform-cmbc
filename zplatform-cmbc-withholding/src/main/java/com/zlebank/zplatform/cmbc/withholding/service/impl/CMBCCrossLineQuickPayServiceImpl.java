@@ -134,7 +134,8 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 					return resultBean;
 				}else{
 					txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
-					resultBean = new ResultBean("T000", "交易失败");
+					return resultBean;
+					
 				}
 				
 			}
@@ -165,29 +166,10 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
         payPartyBean.setPayretcode(withholding.getExeccode());
         payPartyBean.setPayretinfo(withholding.getExecmsg());
         txnsLogDAO.updateCMBCTradeData(payPartyBean);
-        tradeAccountingService.accountingFor(txnseqno);
         if(withholding.getExectype().equals("S")){
+        	tradeAccountingService.accountingFor(txnseqno);
         	tradeNotifyService.notify(txnseqno);
         }
-        //txnsLogDAO.updatePayInfo_Fast(payPartyBean);
-        //更新交易流水中心应答信息
-        //txnsLogDAO.updateCMBCWithholdingRetInfo(txnseqno, withholding);
-        //更新核心数据
-        //txnsLogDAO.updateCMBCCoreData(payPartyBean);
-        //String commiteTime = DateUtil.getCurrentDateTime();
-        
-        /**账务处理开始 **/
-        // 应用方信息
-        /*try {
-            AppPartyBean appParty = new AppPartyBean("","000000000000", commiteTime,DateUtil.getCurrentDateTime(), txnseqno, "");
-            txnsLogDAO.updateAppInfo(appParty);
-            IAccounting accounting = AccountingAdapterFactory.getInstance().getAccounting(BusiTypeEnum.fromValue(txnsLog.getBusitype()));
-            accounting.accountedFor(txnseqno);
-            tradeNotifyService.notify(txnseqno);
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultBean = new ResultBean("T000", e.getMessage());
-        }*/
 		return resultBean;
 	}
 	

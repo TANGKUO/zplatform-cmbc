@@ -96,6 +96,7 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
                     }else if("E".equalsIgnoreCase(withholding.getExectype())){
                     	PojoRspmsg msg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, withholding.getExeccode());
                         resultBean = new ResultBean(msg.getWebrspcode(),msg.getRspinfo());
+                        resultBean.setResultObj(withholding);
                         return resultBean;
                     }else if("R".equalsIgnoreCase(withholding.getExectype())){
                         resultBean = new ResultBean("R","正在支付中");
