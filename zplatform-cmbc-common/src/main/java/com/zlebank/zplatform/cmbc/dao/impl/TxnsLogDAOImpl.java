@@ -182,7 +182,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
         
         SQLQuery sqlQuery = (SQLQuery) getSession().createSQLQuery(sqlBuffer.toString()).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         sqlQuery.setParameter(0, cardNo);
-        sqlQuery.setParameter(0, cardNo.trim().length());
+        sqlQuery.setParameter(1, cardNo.trim().length());
         List<Map<String, Object>> routList =  (List<Map<String, Object>>)sqlQuery.list();
        
         if(routList.size()>0){

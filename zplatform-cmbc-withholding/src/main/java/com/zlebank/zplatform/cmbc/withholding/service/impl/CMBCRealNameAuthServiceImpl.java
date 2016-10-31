@@ -105,7 +105,7 @@ public class CMBCRealNameAuthServiceImpl implements CMBCRealNameAuthService{
         int[] timeArray = new int[]{1000, 2000, 8000, 16000, 32000};
         try {
             for (int i = 0; i < 5; i++) {
-                //withholding = txnsWithholdingService.getWithholdingBySerialNo(serialno);
+                withholding = txnsWithholdingService.getWithholdingBySerialNo(serialno);
                 if(!StringUtils.isEmpty(withholding.getExectype())){
                 	
                     if("S".equalsIgnoreCase(withholding.getExectype())){

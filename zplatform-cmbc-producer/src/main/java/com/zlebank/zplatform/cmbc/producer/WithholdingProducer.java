@@ -12,6 +12,7 @@ package com.zlebank.zplatform.cmbc.producer;
 
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -142,7 +143,7 @@ public class WithholdingProducer implements Producer{
 				return resultBean;
 			}else{
 				try {
-					Thread.sleep(100);
+					TimeUnit.MILLISECONDS.sleep(900);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

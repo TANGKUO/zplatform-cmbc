@@ -18,6 +18,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
+import com.zlebank.zplatform.cmbc.common.utils.Constant;
+import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.withholding.bean.CardMessageBean;
 
 /**
@@ -82,12 +84,12 @@ public class RealNameAuthBean implements Serializable {
     private String resv;
     
     public RealNameAuthBean(CardMessageBean card){
-        /*this.version = ConsUtil.getInstance().cons.getCmbc_version();
+        this.version = Constant.getInstance().getCmbc_version();
         this.transdate = DateUtil.getCurrentDate();
         this.transtime = DateUtil.getCurrentTime();
         this.serialno = card.getWithholding().getSerialno();
-        this.merid = ConsUtil.getInstance().cons.getCmbc_merid();
-        this.mername = ConsUtil.getInstance().cons.getCmbc_mername();*/
+        this.merid = Constant.getInstance().getCmbc_merid();
+        this.mername = Constant.getInstance().getCmbc_mername();
         this.cardtype = card.getCardType();
         this.accno = card.getCardNo();
         this.accname = card.getCustomerNm();

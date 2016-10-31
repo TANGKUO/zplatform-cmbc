@@ -22,6 +22,7 @@ import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWhiteList;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
+import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWhiteListService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.bean.WhiteListMessageBean;
@@ -47,6 +48,8 @@ public class CMBCWhiteListServiceImpl implements CMBCWhiteListService {
 	private WithholdingService withholdingService;
 	@Autowired
 	private TxnsLogDAO txnsLogDAO;
+	@Autowired
+	private SerialNumberService serialNumberService;
 	/**
 	 *
 	 * @param bankaccno
@@ -72,7 +75,9 @@ public class CMBCWhiteListServiceImpl implements CMBCWhiteListService {
                 WhiteListMessageBean whiteListMsg = new WhiteListMessageBean(bankinscode, bankname, bankaccno, bankaccname, CMBCCardTypeEnum.fromCardType(bankacctype).getCode(), certtype, certno, mobile, "", "");
                 //withholdingService.whiteListCollection(whiteListMsg);
                 withholding = new PojoTxnsWithholding(whiteListMsg.getBankinscode(),whiteListMsg.getBankname(),whiteListMsg.getBankaccno(),whiteListMsg.getBankaccname(),whiteListMsg.getBankacctype(),whiteListMsg.getCerttype(),whiteListMsg.getCertno(),whiteListMsg.getMobile());
+               
                 whiteListMsg.setWithholding(withholding);
+                
                 //保存白名单采集流水
                 txnsWithholdingService.saveWithholdingLog(withholding);
                 //民生白名单采集
