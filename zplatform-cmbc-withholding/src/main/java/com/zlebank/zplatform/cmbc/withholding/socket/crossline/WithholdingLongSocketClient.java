@@ -105,7 +105,9 @@ public class WithholdingLongSocketClient extends BaseClient implements Client {
         }
         socket = new Socket(serverIp, port);
         socket.setKeepAlive(true);// 开启保持活动状态的套接字
-        socket.setSoTimeout(timeout);// 设置超时时间
+		socket.setTcpNoDelay(true);
+		socket.setOOBInline(true);
+       // socket.setSoTimeout(timeout);// 设置超时时间
         log.info("本地端口：" + socket.getLocalPort());
         
         log.info("WithholdingLongSocketClient socket[{}]:{{}}",socket.getInetAddress().getHostAddress(),socket.getLocalPort());
@@ -209,7 +211,7 @@ public class WithholdingLongSocketClient extends BaseClient implements Client {
             while (running) {
                 try {
                     InputStream is = socket.getInputStream();
-                    if (is.available() > 0) {
+                    //if (is.available() > 0) {//此处available（）方法会造成死循环，导致cpu占用率上升
                         byte[] msgLength = new byte[8];
                         is.read(msgLength);
                         int length = Integer.valueOf(new String(msgLength,ENCODING));
@@ -217,9 +219,9 @@ public class WithholdingLongSocketClient extends BaseClient implements Client {
                         is.read(buffer);
                         //log.info("socket recive msg:"+LogUtil.formatLogHex(buffer));
                         receiveProcessor.onReceive(buffer);
-                    } else {
-                        Thread.sleep(10);
-                    }
+                   // } else {
+                    //    Thread.sleep(10);
+                   // }
                 } catch (Exception e) {
                     e.printStackTrace();
                     WithholdingLongSocketClient.this.shutdown();

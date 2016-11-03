@@ -49,7 +49,10 @@ public class WithholdingServiceTest {
 			ResultBean queryReturnResult = producer.queryReturnResult(sendResult);
 			System.out.println(JSON.toJSONString(queryReturnResult));
 			//TimeUnit.MINUTES.sleep(1);
+			
+			
 			System.in.read();
+			producer.closeProducer();
 		} catch (MQClientException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

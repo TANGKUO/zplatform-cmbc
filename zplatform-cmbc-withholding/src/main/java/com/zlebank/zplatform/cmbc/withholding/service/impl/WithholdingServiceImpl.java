@@ -12,6 +12,8 @@ package com.zlebank.zplatform.cmbc.withholding.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ import com.zlebank.zplatform.cmbc.security.RSAHelper;
 import com.zlebank.zplatform.cmbc.withholding.bean.CardMessageBean;
 import com.zlebank.zplatform.cmbc.withholding.bean.WhiteListMessageBean;
 import com.zlebank.zplatform.cmbc.withholding.bean.WithholdingMessageBean;
+import com.zlebank.zplatform.cmbc.withholding.net.netty.NettyClientBootstrap;
+import com.zlebank.zplatform.cmbc.withholding.net.netty.SocketChannelHelper;
 import com.zlebank.zplatform.cmbc.withholding.request.bean.RealNameAuthBean;
 import com.zlebank.zplatform.cmbc.withholding.request.bean.RealNameAuthQueryBean;
 import com.zlebank.zplatform.cmbc.withholding.request.bean.RealTimeWithholdingBean;
@@ -203,7 +207,30 @@ public class WithholdingServiceImpl implements WithholdingService {
     @Override
     public ResultBean realTimeWitholding(WithholdingMessageBean withholdingMsg) throws CMBCTradeException {
     	ResultBean resultBean = null;
-        RealTimeWithholdingBean realNameAuthBean = new RealTimeWithholdingBean(withholdingMsg);
+        final RealTimeWithholdingBean realNameAuthBean = new RealTimeWithholdingBean(withholdingMsg);
+        /*int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();
+						byte[] bytes = socketChannelHelper.getMessageHandler().pack(realNameAuthBean);
+						String hostAddress = socketChannelHelper.getMessageConfigService().getString("HOST_ADDRESS", Constant.getInstance().getCmbc_withholding_ip());// 主机名称
+						int hostPort = socketChannelHelper.getMessageConfigService().getInt("HOST_PORT", Constant.getInstance().getCmbc_withholding_port());// 主机端口
+						NettyClientBootstrap bootstrap = NettyClientBootstrap.getInstance(hostAddress, hostPort);
+						bootstrap.sendMessage(bytes);
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+        return null;*/
+        ////////////////////////////////////////////以下为原始socket长连接//////////////////////////////////////////////////////////
         String message = realNameAuthBean.toXML();
         log.info("send realTimeWitholding msg xml :"+message);
         byte[] signMsg = null;

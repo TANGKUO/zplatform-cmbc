@@ -1,8 +1,7 @@
-package com.zlebank.zplatform.cmbc.insteadpay.net;
+package com.zlebank.zplatform.cmbc.withholding.net.netty;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,11 +20,10 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
-import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
-import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayResultBean;
-import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryBean;
-import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryResultBean;
 import com.zlebank.zplatform.cmbc.security.CryptoUtil;
+import com.zlebank.zplatform.cmbc.withholding.request.bean.RealTimeWithholdingBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingQueryResultBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingResultBean;
 
 /**
  * <strong>Title : MessageHandler</strong><br>
@@ -39,7 +37,7 @@ public class MessageHandler {
 	/**
 	 * 日志对象
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
 	/**
 	 * 报文配置服务
@@ -173,24 +171,24 @@ public class MessageHandler {
 		return bytes;
 	}
 	
-	public byte[] pack(RealTimePayBean realTimePayBean) {
+	public byte[] pack(RealTimeWithholdingBean realTimeWithholdingBean ) {
 		byte[] bytes = null;
 		try {
 			String charset = messageConfigService.getString("CHARSET");// 字符集
 			int headLength = messageConfigService.getInt("HEAD_LENGTH", 8);// 报文头长度
-			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 15);// 合作方编码长度
+			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 8);// 合作方编码长度
 			int messageCodeLength = messageConfigService.getInt("MESSAGE_CODE_LENGTH", 8);// 报文码长度
 			int signCodeLength = messageConfigService.getInt("SIGN_CODE_LENGTH", 4);// 签名编码长度
 			String companyCode = messageConfigService.getString("COMPANY_CODE");// 合作方编码
 			//PublicKey publicKey = (PublicKey) messageConfigService.getObject("PUBLIC_KEY");// 银行公钥
 			//PrivateKey privateKey = (PrivateKey) messageConfigService.getObject("PRIVATE_KEY");// 合作方私钥
 
-			String privateKey = Constant.getInstance().getCmbc_insteadpay_privatekey();
-			String publicKey = Constant.getInstance().getCmbc_insteadpay_publickey();
+			String privateKey = Constant.getInstance().getCmbc_withholding_private_key();
+			String publicKey = Constant.getInstance().getCmbc_withholding_public_key();
 			
-			String messageCode = Constant.REALTIME_INSTEADPAY;
-			String xml = realTimePayBean.toXML();
-			logger.info("本地--->对端{}:{}", new Object[] { messageCode, xml });
+			String messageCode = Constant.WITHHOLDING;
+			String xml = realTimeWithholdingBean.toXMLExt();//realTimePayBean.toXML();
+			logger.info("本地--->对端明文{}:{}", new Object[] { messageCode, xml });
 			byte[] xmlBytes = xml.getBytes(charset);
 
 			byte[] signBytes = CryptoUtil.digitalSign(xmlBytes, privateKey, "SHA1WithRSA");// 签名
@@ -210,7 +208,7 @@ public class MessageHandler {
 		}
 		return bytes;
 	}
-	public byte[] pack(RealTimeQueryBean queryBean) {
+	/*public byte[] pack(RealTimeQueryBean queryBean) {
 		byte[] bytes = null;
 		try {
 			String charset = messageConfigService.getString("CHARSET");// 字符集
@@ -246,7 +244,7 @@ public class MessageHandler {
 			logger.error(e.getLocalizedMessage(), e);
 		}
 		return bytes;
-	}
+	}*/
 	/**
 	 * 解包
 	 * 
@@ -258,13 +256,13 @@ public class MessageHandler {
 		Map<String, Object> resultMap = Maps.newHashMap();
 		try {
 			String charset = messageConfigService.getString("CHARSET");// 字符集
-			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 15);// 合作方编码长度
+			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 8);// 合作方编码长度
 			int messageCodeLength = messageConfigService.getInt("MESSAGE_CODE_LENGTH", 8);// 报文码长度
 			int signCodeLength = messageConfigService.getInt("SIGN_CODE_LENGTH", 4);// 签名编码长度
 			//PublicKey publicKey = (PublicKey) messageConfigService.getObject("PUBLIC_KEY");// 银行公钥
 			//PrivateKey privateKey = (PrivateKey) messageConfigService.getObject("PRIVATE_KEY");
-			String privateKey = Constant.getInstance().getCmbc_insteadpay_privatekey();// 合作方私钥
-			String publicKey = Constant.getInstance().getCmbc_insteadpay_publickey();// 银行公钥
+			String privateKey = Constant.getInstance().getCmbc_withholding_private_key();// 合作方私钥
+			String publicKey = Constant.getInstance().getCmbc_withholding_public_key();// 银行公钥
 			
 
 			int headLength = companyCodeLength + messageCodeLength + signCodeLength;
@@ -282,20 +280,20 @@ public class MessageHandler {
 
 			byte[] xmlBytes = CryptoUtil.decrypt(encryptedBytes, privateKey, 2048, 11, "RSA/ECB/PKCS1Padding");// 解密
 			String xml = new String(xmlBytes, charset);
-			logger.info("对端--->{}:{}", new Object[] { messageCode, xml });
+			logger.info("对端--->本地{}:{}", new Object[] { messageCode, xml });
 			XStream xstream = new XStream(new DomDriver(null,new XmlFriendlyNameCoder("_-", "_")));
 			
-			if(Constant.REALTIME_INSTEADPAY.equals(messageCode)){
-				xstream.processAnnotations(RealTimePayResultBean.class);
+			if(Constant.WITHHOLDING.equals(messageCode)){
+				xstream.processAnnotations(RealTimeWithholdingResultBean.class);
 	            xstream.autodetectAnnotations(true);
-	            RealTimePayResultBean realTimePayResultBean =  (RealTimePayResultBean) xstream.fromXML(xml);
-	            resultMap.put("messagecode", Constant.REALTIME_INSTEADPAY);
+	            RealTimeWithholdingResultBean realTimePayResultBean =  (RealTimeWithholdingResultBean) xstream.fromXML(xml);
+	            resultMap.put("messagecode", Constant.WITHHOLDING);
 	            resultMap.put("result", realTimePayResultBean);
-			}else if(Constant.REALTIME_INSTEADPAY_QUERY.equals(messageCode)){
-				xstream.processAnnotations(RealTimeQueryResultBean.class);
+			}else if(Constant.WITHHOLDINGQUERY.equals(messageCode)){
+				xstream.processAnnotations(RealTimeWithholdingQueryResultBean.class);
 	            xstream.autodetectAnnotations(true);
-	            RealTimeQueryResultBean queryResultBean = (RealTimeQueryResultBean) xstream.fromXML(xml);
-	            resultMap.put("messagecode", Constant.REALTIME_INSTEADPAY_QUERY);
+	            RealTimeWithholdingQueryResultBean queryResultBean = (RealTimeWithholdingQueryResultBean) xstream.fromXML(xml);
+	            resultMap.put("messagecode", Constant.WITHHOLDINGQUERY);
 	            resultMap.put("result", queryResultBean);
 			}
 			

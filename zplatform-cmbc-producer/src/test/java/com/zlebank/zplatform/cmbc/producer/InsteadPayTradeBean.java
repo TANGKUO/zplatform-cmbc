@@ -144,11 +144,11 @@ public class InsteadPayTradeBean {
         this.remark = remark;
     }
     public InsteadPayTradeBean(String text) {
-        this.acc_no = "6228480018543668976";
+        this.acc_no = "6228480018543668979";
         this.acc_name = "郭佳";
         this.bank_type = "";
         this.bank_name = "";
-        this.trans_amt = "10";
+        this.trans_amt = "50";
         this.remark = "测试";
     }
     

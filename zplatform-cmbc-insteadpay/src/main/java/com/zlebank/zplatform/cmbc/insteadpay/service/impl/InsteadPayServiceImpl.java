@@ -96,7 +96,7 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 			throw new CMBCTradeException("");
 		}
 		if("0000".equals(txnsLog.getRetcode())){
-			throw new CMBCTradeException("");
+			//throw new CMBCTradeException("");
 		}
 		PayPartyBean payPartyBean = new PayPartyBean(insteadPayTradeBean.getTxnseqno(),
 				"04", serialNumberService.generateCMBCInsteadPaySerialNo(), ChannelEnmu.CMBCINSTEADPAY_REALTIME.getChnlcode(),

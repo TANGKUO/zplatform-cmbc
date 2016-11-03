@@ -35,7 +35,9 @@ public class InsteadPayTest {
 	public void test_insteadpay(){
 		try {
 			Producer producer = new InsteadPayProducer("192.168.101.104:9876", InsteadPayTagsEnum.INSTEADPAY_REALTIME);
+			
 			InsteadPayTradeBean tradeBean = new InsteadPayTradeBean("");
+			tradeBean.setTxnseqno("1610269900000517");
 			SendResult sendJsonMessage = producer.sendJsonMessage(JSON.toJSONString(tradeBean));
 			ResultBean resultBean = producer.queryReturnResult(sendJsonMessage);
 			System.out.println(JSON.toJSONString(resultBean));

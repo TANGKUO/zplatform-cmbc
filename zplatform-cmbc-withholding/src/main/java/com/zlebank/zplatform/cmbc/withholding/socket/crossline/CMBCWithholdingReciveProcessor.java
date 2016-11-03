@@ -206,7 +206,7 @@ public class CMBCWithholdingReciveProcessor implements ReceiveProcessor{
                                 ResultBean resultBean = new ResultBean(withholding);
                                 TradeBean tradeBean = new TradeBean();
                                 tradeBean.setTxnseqno(withholding.getTxnseqno());
-                                cmbcCrossLineQuickPayService.dealWithAccounting(tradeBean.getTxnseqno(), resultBean);
+                                //cmbcCrossLineQuickPayService.dealWithAccounting(tradeBean.getTxnseqno(), resultBean);
                             } else if(withholding.getExectype().equals("E")){
                                 saveFailedCMBCTrade(withholding);
                             }else{

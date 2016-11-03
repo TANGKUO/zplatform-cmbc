@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.dao.TxnsWithholdingDAO;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
@@ -40,4 +43,6 @@ public class TxnsWithholdingServiceImpl implements TxnsWithholdingService{
     public void updateWithholdingLogError(PojoTxnsWithholding withholding) {
     	txnsWithholdingDAO.updateWithholdingLogError(withholding);
     }
+    
+    
 }

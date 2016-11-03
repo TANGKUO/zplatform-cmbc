@@ -24,6 +24,12 @@
 			<groupId>com.zlebank.zplatform</groupId>
 			<artifactId>zplatform-cmbc-consumer</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>netty</artifactId>
+					<groupId>org.jboss.netty</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

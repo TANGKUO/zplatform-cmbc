@@ -64,7 +64,7 @@ public class TxnsLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsLog> implements
 		Criteria criteria = getSession().createCriteria(PojoTxnsLog.class);
 		criteria.add(Restrictions.eq("txnseqno", txnseqno));
 		PojoTxnsLog txnsLog = (PojoTxnsLog) criteria.uniqueResult();
-		if(txnsLog==null){
+		if(txnsLog!=null){
 			getSession().evict(txnsLog);
 		}
 		return txnsLog;

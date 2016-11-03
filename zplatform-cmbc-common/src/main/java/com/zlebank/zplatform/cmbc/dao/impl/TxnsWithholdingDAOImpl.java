@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.dao.TxnsWithholdingDAO;
 @Repository("txnsWithholdingDAO")
@@ -71,6 +74,33 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         }
         int rows = query.executeUpdate();
         log.info("updateWithholdingLogError() effect rows:"+rows); 
+	}
+
+	/**
+	 *
+	 * @param serialno
+	 * @param realTimeWithholdingResultBean
+	 */
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void updateWithholdingResult(CMBCRealTimeWithholdingResultBean realTimeWithholdingResultBean) {
+		// TODO Auto-generated method stub
+		StringBuffer updateHQL = new StringBuffer("update PojoTxnsWithholding set ");
+        updateHQL.append("exectype = ?,");
+        updateHQL.append("execcode = ?,");
+        updateHQL.append("execmsg = ?,");
+        updateHQL.append("settdate = ?,");
+        updateHQL.append("banktrandate = ?,");
+        updateHQL.append("banktrantime = ?,");
+        updateHQL.append("payserialno = ?");
+        updateHQL.append("where serialno = ? ");
+        Query query = getSession().createQuery(updateHQL.toString());
+        Object[] paramaters = new Object[]{realTimeWithholdingResultBean.getExectype(),realTimeWithholdingResultBean.getExeccode(),realTimeWithholdingResultBean.getExecmsg(),realTimeWithholdingResultBean.getSettdate(),realTimeWithholdingResultBean.getSettdate(),realTimeWithholdingResultBean.getTranstime(),realTimeWithholdingResultBean.getPayserialno(),realTimeWithholdingResultBean.getReqserialno()};
+        for(int i=0;i<paramaters.length;i++){
+        	query.setParameter(i, paramaters[i]);
+        }
+        int rows = query.executeUpdate();
+        log.info("updateWithholdingResult() effect rows:"+rows);
 	}
 
     

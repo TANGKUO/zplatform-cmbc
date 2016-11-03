@@ -325,7 +325,7 @@ public class SocketAsyncLongOutputAdapter {
 
 		String hostName = messageConfigService.getString("HOST_NAME");// 主机名称
 		String hostAddress = messageConfigService.getString("HOST_ADDRESS");// 主机名称
-		int hostPort = messageConfigService.getInt("HOST_PORT", 9008);// 主机端口
+		int hostPort = messageConfigService.getInt("HOST_PORT", 9108);// 主机端口
 		String charset = messageConfigService.getString("CHARSET");// 字符集
 		int headLength = messageConfigService.getInt("HEAD_LENGTH", 6);// 报文头长度位数
 		int maxSingleLength = messageConfigService.getInt("MAX_SINGLE_LENGTH", 200 * 1024);// 单个报文最大长度，单位：字节

@@ -31,7 +31,11 @@ import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimePayResultBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryBean;
 import com.zlebank.zplatform.cmbc.insteadpay.bean.RealTimeQueryResultBean;
+import com.zlebank.zplatform.cmbc.insteadpay.net.MessageConfigService;
+import com.zlebank.zplatform.cmbc.insteadpay.net.MessageHandler;
 import com.zlebank.zplatform.cmbc.insteadpay.net.SocketAsyncLongOutputAdapter;
+import com.zlebank.zplatform.cmbc.insteadpay.net.netty.NettyClientBootstrap;
+import com.zlebank.zplatform.cmbc.insteadpay.net.netty.SocketChannelHelper;
 import com.zlebank.zplatform.cmbc.insteadpay.service.CMBCInsteadPayService;
 
 /**
@@ -56,6 +60,34 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 	 */
 	@Override
 	public ResultBean realTimeInsteadPay(final RealTimePayBean realTimePayBean) {
+		
+		
+		int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();
+						byte[] bytes = socketChannelHelper.getMessageHandler().pack(realTimePayBean);
+						String hostAddress = socketChannelHelper.getMessageConfigService().getString("HOST_ADDRESS");// 主机名称
+						int hostPort = socketChannelHelper.getMessageConfigService().getInt("HOST_PORT", 9108);// 主机端口
+						NettyClientBootstrap bootstrap = NettyClientBootstrap.getInstance(hostAddress, hostPort);
+						bootstrap.sendMessage(bytes);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+		
+		
+		return null;
+	}
+	/*public ResultBean realTimeInsteadPay(final RealTimePayBean realTimePayBean) {
 		final SocketAsyncLongOutputAdapter adapter = new SocketAsyncLongOutputAdapter();
 		adapter.start();
 		int reqPoolSize = 1;
@@ -99,10 +131,10 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 								logger.error("解包失败:{}", new Object[] { dataContainer });
 							}else{
 								//具体业务处理代码
-								/*
+								
 								 * 1.代付结果
 								 * 2.代付查询结果
-								 */
+								 
 								if(Constant.REALTIME_INSTEADPAY.equals(dataContainer.get("messagecode").toString())){
 									RealTimePayResultBean realTimePayResultBean = (RealTimePayResultBean) dataContainer.get("result");
 									txnsCmbcInstPayLogDAO.updateInsteadPayResult(BeanCopyUtil.copyBean(CMBCRealTimeInsteadPayResultBean.class, realTimePayResultBean));
@@ -118,7 +150,7 @@ public class CMBCInsteadPayServiceImpl implements CMBCInsteadPayService {
 		}
 		executors.shutdown();
 		return null;
-	}
+	}*/
 
 	/**
 	 *
