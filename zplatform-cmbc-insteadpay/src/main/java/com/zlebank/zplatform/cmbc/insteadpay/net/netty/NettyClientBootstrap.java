@@ -109,6 +109,15 @@ public class NettyClientBootstrap {
 	}
 	
 	public void sendMessage(byte[] msg){
+		if(!socketChannel.isActive()){
+			shutdown();
+			try {
+				start();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		socketChannel.writeAndFlush(msg);
 	}
 	
@@ -126,9 +135,10 @@ public class NettyClientBootstrap {
 	class KeepAliveWatchDog implements Runnable {
         public KeepAliveWatchDog(){
             Thread.currentThread().setName("InsteadPay KeepAliveWatchDog Thread");
+            log.info("InsteadPay KeepAliveWatchDog Thread start");
         }
         //long checkDelay = 0;
-        long keepAliveDelay = 30*1000;
+        long keepAliveDelay = 30;
         public void run() {
             while (running) {
                 if (System.currentTimeMillis() - lastSendTime > keepAliveDelay) {
