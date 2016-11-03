@@ -104,7 +104,7 @@
      </bean> 
     
     
-    <!-- <bean id="logHelper" class="com.zlebank.zplatform.utils.LogHelper"/>
+    <bean id="logHelper" class="com.zlebank.zplatform.utils.LogHelper"/>
 	<aop:config>
 	    <aop:aspect ref="logHelper">
 	        <aop:pointcut id="pointcut" expression="execution(* com.zlebank.zplatform..*.*(..))"/>
@@ -113,5 +113,5 @@
 	        <aop:around method="around"  pointcut-ref="pointcut" />
 	        <aop:after-throwing method="throwException" pointcut-ref="pointcut" throwing="ex" />
 	    </aop:aspect>
-	</aop:config> -->
+	</aop:config>
 </beans>
