@@ -92,8 +92,32 @@ public class WithholdingServiceImpl implements WithholdingService {
     @Override
     public ResultBean realNameAuthentication(CardMessageBean card)
             throws CMBCTradeException {
-        RealNameAuthBean realNameAuthBean = new RealNameAuthBean(card);
-        String message = realNameAuthBean.toXML();
+        final RealNameAuthBean realNameAuthBean = new RealNameAuthBean(card);
+        int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();
+						byte[] bytes = socketChannelHelper.getMessageHandler().pack(realNameAuthBean);
+						String hostAddress = socketChannelHelper.getMessageConfigService().getString("HOST_ADDRESS", Constant.getInstance().getCmbc_withholding_ip());// 主机名称
+						int hostPort = socketChannelHelper.getMessageConfigService().getInt("HOST_PORT", Constant.getInstance().getCmbc_withholding_port());// 主机端口
+						NettyClientBootstrap bootstrap = NettyClientBootstrap.getInstance(hostAddress, hostPort);
+						bootstrap.sendMessage(bytes);
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+        return null;
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        /*String message = realNameAuthBean.toXML();
         log.info("send realNameAuth msg xml:"+message);
         byte[] signMsg = null;
         int signMsg_length = 0;
@@ -136,7 +160,7 @@ public class WithholdingServiceImpl implements WithholdingService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return null;*/
     }
     
     
@@ -208,7 +232,7 @@ public class WithholdingServiceImpl implements WithholdingService {
     public ResultBean realTimeWitholding(WithholdingMessageBean withholdingMsg) throws CMBCTradeException {
     	ResultBean resultBean = null;
         final RealTimeWithholdingBean realNameAuthBean = new RealTimeWithholdingBean(withholdingMsg);
-        /*int reqPoolSize = 1;
+        int reqPoolSize = 1;
 		// 初始化线程池
 		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
 		for (int i = 0; i < reqPoolSize; i++) {
@@ -229,9 +253,9 @@ public class WithholdingServiceImpl implements WithholdingService {
 			});
 		}
 		executors.shutdown();
-        return null;*/
+        return null;
         ////////////////////////////////////////////以下为原始socket长连接//////////////////////////////////////////////////////////
-        String message = realNameAuthBean.toXML();
+        /*String message = realNameAuthBean.toXML();
         log.info("send realTimeWitholding msg xml :"+message);
         byte[] signMsg = null;
         int signMsg_length = 0;
@@ -285,7 +309,7 @@ public class WithholdingServiceImpl implements WithholdingService {
         	e.printStackTrace();
         	resultBean = new ResultBean("09", e.getMessage());
 		}
-        return resultBean;
+        return resultBean;*/
     }
     /**
      *
@@ -296,8 +320,31 @@ public class WithholdingServiceImpl implements WithholdingService {
     @Override
     public ResultBean whiteListCollection(WhiteListMessageBean whiteListMsg)
             throws CMBCTradeException {
-        WhiteListBean whiteListBean = new WhiteListBean(whiteListMsg);
-        String message = whiteListBean.toXML();
+        final WhiteListBean whiteListBean = new WhiteListBean(whiteListMsg);
+        int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();
+						byte[] bytes = socketChannelHelper.getMessageHandler().pack(whiteListBean);
+						String hostAddress = socketChannelHelper.getMessageConfigService().getString("HOST_ADDRESS", Constant.getInstance().getCmbc_withholding_ip());// 主机名称
+						int hostPort = socketChannelHelper.getMessageConfigService().getInt("HOST_PORT", Constant.getInstance().getCmbc_withholding_port());// 主机端口
+						NettyClientBootstrap bootstrap = NettyClientBootstrap.getInstance(hostAddress, hostPort);
+						bootstrap.sendMessage(bytes);
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+        return null;
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /*String message = whiteListBean.toXML();
         log.info("send whiteListCollection msg xml:"+message);
         byte[] signMsg = null;
         int signMsg_length = 0;
@@ -345,7 +392,7 @@ public class WithholdingServiceImpl implements WithholdingService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return null;*/
     }
     /**
      *
@@ -579,8 +626,36 @@ public class WithholdingServiceImpl implements WithholdingService {
     @Override
     public ResultBean realTimeWitholdinghQuery(PojoTxnsWithholding withholding)
             throws CMBCTradeException {
-        RealTimeWithholdingQueryBean realNameAuthQueryBean = new RealTimeWithholdingQueryBean(withholding);
-        String message = realNameAuthQueryBean.toXML();
+        final RealTimeWithholdingQueryBean realNameAuthQueryBean = new RealTimeWithholdingQueryBean(withholding);
+        int reqPoolSize = 1;
+		// 初始化线程池
+		ExecutorService executors = Executors.newFixedThreadPool(reqPoolSize);
+		for (int i = 0; i < reqPoolSize; i++) {
+			executors.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();
+						byte[] bytes = socketChannelHelper.getMessageHandler().pack(realNameAuthQueryBean);
+						String hostAddress = socketChannelHelper.getMessageConfigService().getString("HOST_ADDRESS", Constant.getInstance().getCmbc_withholding_ip());// 主机名称
+						int hostPort = socketChannelHelper.getMessageConfigService().getInt("HOST_PORT", Constant.getInstance().getCmbc_withholding_port());// 主机端口
+						NettyClientBootstrap bootstrap = NettyClientBootstrap.getInstance(hostAddress, hostPort);
+						bootstrap.sendMessage(bytes);
+					} catch (Exception e) {
+						log.error(e.getMessage(), e);
+					}
+				}
+			});
+		}
+		executors.shutdown();
+        return null;
+        
+        
+        
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*String message = realNameAuthQueryBean.toXML();
         log.info("send msg :"+message);
         byte[] signMsg = null;
         int signMsg_length = 0;
@@ -628,7 +703,7 @@ public class WithholdingServiceImpl implements WithholdingService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return null;*/
     }
     
     /**

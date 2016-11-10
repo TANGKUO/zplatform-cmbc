@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
@@ -30,6 +31,7 @@ import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.bean.CardMessageBean;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCRealNameAuthService;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCWhiteListService;
 import com.zlebank.zplatform.cmbc.withholding.service.WithholdingService;
 
 /**
@@ -50,7 +52,8 @@ public class CMBCRealNameAuthServiceImpl implements CMBCRealNameAuthService{
 	private TxnsWithholdingService txnsWithholdingService;
 	@Autowired
 	private WithholdingService withholdingService;
-	
+	@Autowired
+	private CMBCWhiteListService whiteListService;
 	@Autowired
 	private SerialNumberService serialNumberService;
 	/**
@@ -82,6 +85,9 @@ public class CMBCRealNameAuthServiceImpl implements CMBCRealNameAuthService{
             withholdingService.realNameAuthentication(card);
             //查询实名认证结果
             resultBean = queryResult(withholding.getSerialno());
+            if(resultBean.isResultBool()){
+            	whiteListService.whiteListCollection(realnameAuth.getCardNo(), realnameAuth.getCustomerNm(), realnameAuth.getCertifId(), realnameAuth.getPhoneNo()+"", realnameAuth.getCertifTp());
+            }
             log.info("realNameAuth result:"+JSON.toJSONString(resultBean));
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -129,6 +135,19 @@ public class CMBCRealNameAuthServiceImpl implements CMBCRealNameAuthService{
         
         return resultBean;
     }
+
+	/**
+	 *
+	 * @param tradeBean
+	 * @return
+	 * @throws CMBCTradeException
+	 */
+	@Override
+	public ResultBean realNameAuth(TradeBean tradeBean)
+			throws CMBCTradeException {
+		PojoRealnameAuth realnameAuth = new PojoRealnameAuth(tradeBean);
+		return realNameAuth(realnameAuth);
+	}
     
     
 

@@ -22,8 +22,10 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealNameResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.CMBCWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.utils.BeanCopyUtil;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.SpringContext;
@@ -31,7 +33,10 @@ import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsWithholdingDAO;
 import com.zlebank.zplatform.cmbc.security.CryptoUtil;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.RealNameAuthResultBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.WhiteListResultBean;
 
 /**
  * Class Description
@@ -119,6 +124,15 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<byte[]>{
 				if(Constant.WITHHOLDING.equals(dataContainer.get("messagecode").toString())){
 					RealTimeWithholdingResultBean realTimePayResultBean = (RealTimeWithholdingResultBean) dataContainer.get("result");
 					txnsWithholdingDAO.updateWithholdingResult( BeanCopyUtil.copyBean(CMBCRealTimeWithholdingResultBean.class, realTimePayResultBean));
+				}else if(Constant.REALNAMEAUTH.equals(dataContainer.get("messagecode").toString())){
+					RealNameAuthResultBean nameAuthResultBean = (RealNameAuthResultBean) dataContainer.get("result");
+					txnsWithholdingDAO.updateRealNameResult( BeanCopyUtil.copyBean(CMBCRealNameResultBean.class, nameAuthResultBean));
+				}else if(Constant.WHITELIST.equals(dataContainer.get("messagecode").toString())){
+					WhiteListResultBean whiteListResultBean = (WhiteListResultBean) dataContainer.get("result");
+					txnsWithholdingDAO.updateWithholdingResult( BeanCopyUtil.copyBean(CMBCRealTimeWithholdingResultBean.class, whiteListResultBean));
+				}else if(Constant.WITHHOLDINGQUERY.equals(dataContainer.get("messagecode").toString())){
+					RealTimeWithholdingQueryResultBean realTimeWithholdingQueryResultBean = (RealTimeWithholdingQueryResultBean) dataContainer.get("result");
+					txnsWithholdingDAO.updateWithholdingQueryResult(BeanCopyUtil.copyBean(CMBCWithholdingQueryResultBean.class, realTimeWithholdingQueryResultBean));
 				}
 			}
 		}

@@ -8,7 +8,7 @@
  * Copyright (c) 2016,zlebank.All rights reserved.
  * 
  */
-package com.zlebank.zplatform.cmbc.producer;
+package com.zlebank.zplatform.cmbc.producer.spring;
 
 import java.util.List;
 import java.util.Random;
@@ -31,7 +31,6 @@ import com.alibaba.rocketmq.common.message.Message;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
 import com.google.common.base.Charsets;
 import com.zlebank.zplatform.cmbc.producer.bean.ResultBean;
-import com.zlebank.zplatform.cmbc.producer.enums.InsteadPayTagsEnum;
 import com.zlebank.zplatform.cmbc.producer.enums.WithholdingTagsEnum;
 import com.zlebank.zplatform.cmbc.producer.interfaces.Producer;
 import com.zlebank.zplatform.cmbc.producer.redis.RedisFactory;
@@ -44,8 +43,8 @@ import com.zlebank.zplatform.cmbc.producer.redis.RedisFactory;
  * @date 2016年10月14日 上午9:57:27
  * @since 
  */
-public class WithholdingProducer implements Producer{
-	private final static Logger logger = LoggerFactory.getLogger(WithholdingProducer.class);
+public class WithholdingSpringProducer implements Producer{
+	private final static Logger logger = LoggerFactory.getLogger(WithholdingSpringProducer.class);
 	private static final String KEY = "CMBCWITHHOLDING:";
 	private static final  ResourceBundle RESOURCE = ResourceBundle.getBundle("producer_cmbc");
 	
@@ -53,18 +52,25 @@ public class WithholdingProducer implements Producer{
 	private DefaultMQProducer producer;
 	//主题
 	private String topic;
-	private WithholdingTagsEnum tags;
-	public WithholdingProducer(String namesrvAddr,WithholdingTagsEnum tags) throws MQClientException{
-		logger.info("【初始化WithholdingProducer】");
-		logger.info("【namesrvAddr】"+namesrvAddr);
+	private String namesrvAddr;
+	public void init() throws MQClientException{
+		logger.info("【初始化WithholdingSpringProducer】");
+		if(StringUtils.isEmpty(namesrvAddr)){
+			namesrvAddr = RESOURCE.getString("single.namesrv.addr");
+		}
+		logger.info("【namesrvAddr】"+namesrvAddr);          
 		producer = new DefaultMQProducer(RESOURCE.getString("cmbc.withholding.producer.group"));
 		producer.setNamesrvAddr(namesrvAddr);
 		Random random = new Random();
         producer.setInstanceName(RESOURCE.getString("cmbc.withholding.instancename")+random.nextInt(9999));
         topic = RESOURCE.getString("cmbc.withholding.subscribe");
-        this.tags = tags;
-        logger.info("【初始化SimpleOrderProducer结束】");
+        logger.info("【初始化WithholdingSpringProducer结束】");
+        producer.start();
 	}
+	
+	
+	
+	
 	
 	/**
 	 *
@@ -81,8 +87,7 @@ public class WithholdingProducer implements Producer{
 		if(producer==null){
 			throw new MQClientException(-1,"SimpleOrderProducer为空");
 		}
-		producer.start();
-		WithholdingTagsEnum withholdingTagsEnum =(WithholdingTagsEnum) tags;
+		WithholdingTagsEnum withholdingTagsEnum = (WithholdingTagsEnum) tags;
 		Message msg = new Message(topic, withholdingTagsEnum.getCode(), message.getBytes(Charsets.UTF_8));
 		SendResult sendResult = producer.send(msg);
 		return sendResult;
@@ -107,7 +112,7 @@ public class WithholdingProducer implements Producer{
 		logger.info("【SimpleOrderCallback receive Result message】{}",JSON.toJSONString(sendResult));
 		logger.info("msgID:{}",sendResult.getMsgId());
 		
-		for (int i = 0;i<100;i++) {
+		for (int i = 0;i<1;i++) {
 			String json = getJsonByCycle(sendResult.getMsgId());
 			logger.info("从redis中取得key【{}】值为{}",KEY+sendResult.getMsgId(),json);
 			if(StringUtils.isNotEmpty(json)){
@@ -133,6 +138,7 @@ public class WithholdingProducer implements Producer{
 		List<String> brpop = jedis.brpop(40, KEY+msgId);
 		if(brpop.size()>0){
 			String tn = brpop.get(1);
+			
 			if(StringUtils.isNotEmpty(tn)){
 				return tn;
 			}

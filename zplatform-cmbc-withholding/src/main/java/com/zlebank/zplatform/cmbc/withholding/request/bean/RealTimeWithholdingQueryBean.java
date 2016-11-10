@@ -222,4 +222,15 @@ public class RealTimeWithholdingQueryBean implements Serializable{
         xml=m.replaceAll("") ;
         return  xml;
     }
+    
+    public synchronized String toXMLExt(){
+    	 XStream xstream = new XStream(new DomDriver(null,new XmlFriendlyNameCoder("_-", "_")));  
+         //xstream.processAnnotations(RealTimePayBean.class);
+         xstream.autodetectAnnotations(true);
+         String xml = xstream.toXML(this);
+         Pattern p = Pattern.compile("\\s{2,}|\t|\r|\n");
+         Matcher m = p.matcher(xml);
+         xml=m.replaceAll("") ;
+         return  xml;
+    }
 }

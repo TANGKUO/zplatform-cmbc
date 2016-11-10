@@ -18,6 +18,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
+import com.zlebank.zplatform.cmbc.common.utils.Constant;
+import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.withholding.bean.WhiteListMessageBean;
 
 /**
@@ -270,6 +272,16 @@ public class WhiteListBean implements Serializable{
         xml=m.replaceAll("") ;
         return  xml;
     }
+    public synchronized String toXMLExt(){
+        XStream xstream = new XStream(new DomDriver(null,new XmlFriendlyNameCoder("_-", "_")));  
+        xstream.autodetectAnnotations(true);
+        String xml = xstream.toXML(this);
+        Pattern p = Pattern.compile("\\s{2,}|\t|\r|\n");
+        Matcher m = p.matcher(xml);
+        xml=m.replaceAll("") ;
+        return  xml;
+    }
+    
     /**
      * @param version
      * @param transdate
@@ -319,12 +331,12 @@ public class WhiteListBean implements Serializable{
     }
     
     public WhiteListBean(WhiteListMessageBean whiteListMsg){
-        /*this.version = ConsUtil.getInstance().cons.getCmbc_version();
+        this.version = Constant.getInstance().getCmbc_version();
         this.transdate = DateUtil.getCurrentDate();
         this.transtime = DateUtil.getCurrentTime();
         this.serialno = whiteListMsg.getWithholding().getSerialno();
-        this.merid = ConsUtil.getInstance().cons.getCmbc_merid();
-        this.mername =  ConsUtil.getInstance().cons.getCmbc_mername();
+        this.merid = Constant.getInstance().getCmbc_merid();
+        this.mername =  Constant.getInstance().getCmbc_mername();
         this.bankinscode = whiteListMsg.getBankinscode();
         this.bankname = whiteListMsg.getBankname();
         this.bankaccno = whiteListMsg.getBankaccno();
@@ -334,7 +346,7 @@ public class WhiteListBean implements Serializable{
         this.certno = whiteListMsg.getCertno();
         this.mobile = whiteListMsg.getMobile();
         this.address = whiteListMsg.getAddress();
-        this.email = whiteListMsg.getEmail();*/
+        this.email = whiteListMsg.getEmail();
     }
     
 }

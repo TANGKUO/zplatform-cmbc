@@ -254,7 +254,18 @@ public class PojoTxnsWithholding implements java.io.Serializable {
         this.chnlcode = ChannelEnmu.CMBCWITHHOLDING.getChnlcode();
     }
     public PojoTxnsWithholding(String oritransdate,String orireqserialno,String txnseqno,ChannelEnmu channel) {
-        switch (channel) {
+    	if(channel==ChannelEnmu.CMBCWITHHOLDING){
+    		this.merid = Constant.getInstance().getCmbc_merid();
+            this.mername = Constant.getInstance().getCmbc_mername();
+            this.transdate = DateUtil.getCurrentDate();
+            this.transtime = DateUtil.getCurrentTime();
+            this.servicecode = Constant.WITHHOLDINGQUERY;
+            this.orireqserialno = orireqserialno;
+            this.oritransdate = oritransdate;
+            this.txnseqno = txnseqno;
+            this.chnlcode = channel.getChnlcode();
+    	}
+        /*switch (channel) {
             case CMBCWITHHOLDING :
                 //this.serialno = OrderNumber.getInstance().generateWithholdingQueryOrderNo();
                 this.merid = Constant.getInstance().getCmbc_merid();
@@ -278,7 +289,7 @@ public class PojoTxnsWithholding implements java.io.Serializable {
                 this.txnseqno = txnseqno;
                 this.chnlcode = channel.getChnlcode();
                 break;
-        }
+        }*/
         
     }
     

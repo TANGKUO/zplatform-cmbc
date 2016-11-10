@@ -38,7 +38,7 @@ public class InsteadPayTest {
 			
 			InsteadPayTradeBean tradeBean = new InsteadPayTradeBean("");
 			tradeBean.setTxnseqno("1610269900000517");
-			SendResult sendJsonMessage = producer.sendJsonMessage(JSON.toJSONString(tradeBean));
+			SendResult sendJsonMessage = producer.sendJsonMessage(JSON.toJSONString(tradeBean),InsteadPayTagsEnum.INSTEADPAY_REALTIME);
 			ResultBean resultBean = producer.queryReturnResult(sendJsonMessage);
 			System.out.println(JSON.toJSONString(resultBean));
 		} catch (MQClientException e) {

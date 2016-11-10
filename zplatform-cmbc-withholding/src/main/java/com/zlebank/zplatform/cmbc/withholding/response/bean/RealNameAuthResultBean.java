@@ -27,19 +27,19 @@ public class RealNameAuthResultBean {
     @XStreamAlias("Version")
     private String version;
     @XStreamAlias("SettDate")
-    private String settdate;// 清算日期private String
+    private String settdate;// 清算日期
     @XStreamAlias("TransTime")
-    private String transtime;// 交易时间private String
+    private String transtime;// 交易时间
     @XStreamAlias("ReqSerialNo")
     private String reqserialno;// 请求流水号
     @XStreamAlias("ExecType")
-    private String exectype;// 响应类型private String
+    private String exectype;// 响应类型
     @XStreamAlias("ExecCode")
-    private String execcode;// 响应代码private String
+    private String execcode;// 响应代码
     @XStreamAlias("ExecMsg")
-    private String execmsg;// 响应描述private String
+    private String execmsg;// 响应描述
     @XStreamAlias("ValidateStatus")
-    private String validatestatus;// 认证状态private String
+    private String validatestatus;// 认证状态
     @XStreamAlias("PaySerialNo")
     private String payserialno;// 平台处理流水号
     @XStreamAlias("Resv")

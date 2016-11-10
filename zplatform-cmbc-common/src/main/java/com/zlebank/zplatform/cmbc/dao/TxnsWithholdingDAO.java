@@ -1,6 +1,8 @@
 package com.zlebank.zplatform.cmbc.dao;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealNameResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.CMBCWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 
 public interface TxnsWithholdingDAO extends BaseDAO<PojoTxnsWithholding>{
@@ -29,4 +31,16 @@ public interface TxnsWithholdingDAO extends BaseDAO<PojoTxnsWithholding>{
 	 * @param realTimeWithholdingResultBean 实时代扣结果 
 	 */
 	public void updateWithholdingResult(CMBCRealTimeWithholdingResultBean realTimeWithholdingResultBean);
+	
+	/**
+	 * 更新民生实名认证交易结果
+	 * @param realNameResultBean
+	 */
+	public void updateRealNameResult(CMBCRealNameResultBean realNameResultBean);
+	
+	/**
+	 * 更新民生代扣交易查询结果
+	 * @param withholdingQueryResultBean
+	 */
+	public void updateWithholdingQueryResult(CMBCWithholdingQueryResultBean withholdingQueryResultBean);
 }

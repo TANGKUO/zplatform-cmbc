@@ -75,7 +75,7 @@ public class CMBCWhiteListServiceImpl implements CMBCWhiteListService {
                 WhiteListMessageBean whiteListMsg = new WhiteListMessageBean(bankinscode, bankname, bankaccno, bankaccname, CMBCCardTypeEnum.fromCardType(bankacctype).getCode(), certtype, certno, mobile, "", "");
                 //withholdingService.whiteListCollection(whiteListMsg);
                 withholding = new PojoTxnsWithholding(whiteListMsg.getBankinscode(),whiteListMsg.getBankname(),whiteListMsg.getBankaccno(),whiteListMsg.getBankaccname(),whiteListMsg.getBankacctype(),whiteListMsg.getCerttype(),whiteListMsg.getCertno(),whiteListMsg.getMobile());
-               
+                withholding.setSerialno(serialNumberService.generateCMBCSerialNo());
                 whiteListMsg.setWithholding(withholding);
                 
                 //保存白名单采集流水

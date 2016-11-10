@@ -22,6 +22,7 @@ import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
+import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.bean.WithholdingMessageBean;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
@@ -51,7 +52,8 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
     private RspmsgDAO rspmsgDAO;
     @Autowired
     private TxnsLogDAO txnsLogService;
-    
+    @Autowired
+    private SerialNumberService serialNumberService;
     /**
      * 跨行代扣
      * @param withholdingMsg
@@ -132,6 +134,7 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
 			PojoTxnsLog txnsLog = txnsLogService.getTxnsLogByTxnseqno(txnseqno);
 			PojoTxnsWithholding withholding_old = txnsWithholdingService.getWithholdingBySerialNo(txnsLog.getPayordno());
 			PojoTxnsWithholding withholding = new PojoTxnsWithholding(withholding_old.getTransdate(),withholding_old.getSerialno(),txnseqno,ChannelEnmu.CMBCWITHHOLDING);
+			withholding.setSerialno(serialNumberService.generateCMBCSerialNo());
 			txnsWithholdingService.saveWithholdingLog(withholding);
 			withholdingService.realTimeWitholdinghQuery(withholding);
 			resultBean = queryCrossLineTradeResult(withholding.getSerialno());

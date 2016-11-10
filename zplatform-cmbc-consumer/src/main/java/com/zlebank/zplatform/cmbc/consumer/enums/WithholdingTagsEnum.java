@@ -35,7 +35,28 @@ public enum WithholdingTagsEnum {
 	/**
 	 * 民生跨行代扣-查询
 	 */
-	QUERY_TRADE("TAG_004");
+	QUERY_TRADE("TAG_004"),
+	/**
+	 * 实名认证
+	 */
+	REALNAME("TAG_005"),
+	/**
+	 * 实名认证查询
+	 */
+	REALNAME_QUERY("TAG_006"),
+	/**
+	 * 白名单
+	 */
+	WHITELIST("TAG_007"),
+	
+	/**
+	 * 白名单查询
+	 */
+	WHITELIST_QUERY("TAG_008"),
+	/**
+	 * 代扣交易查询并处理账务
+	 */
+	WITHHOLDING_QUERY_ACCOUNTING("TAG_009");
 	private String code;
 
 	/**

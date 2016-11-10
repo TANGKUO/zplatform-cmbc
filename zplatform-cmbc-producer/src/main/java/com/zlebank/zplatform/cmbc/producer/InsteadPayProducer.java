@@ -64,40 +64,7 @@ public class InsteadPayProducer implements Producer {
         this.tags = tags;
         logger.info("【初始化InsteadPayProducer结束】");
 	}
-	/**
-	 *
-	 * @param message
-	 * @param tags
-	 * @param sendCallback
-	 * @throws MQClientException
-	 * @throws RemotingException
-	 * @throws InterruptedException
-	 */
-	@Override
-	public void sendMessage(Object message,
-			SendCallback sendCallback) throws MQClientException,
-			RemotingException, InterruptedException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 *
-	 * @param message
-	 * @param tags
-	 * @param sendCallback
-	 * @throws MQClientException
-	 * @throws RemotingException
-	 * @throws InterruptedException
-	 */
-	@Override
-	public void sendJsonMessage(String message,
-			SendCallback sendCallback) throws MQClientException,
-			RemotingException, InterruptedException {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	/**
 	 *
 	 * @param message
@@ -109,14 +76,15 @@ public class InsteadPayProducer implements Producer {
 	 * @throws MQBrokerException
 	 */
 	@Override
-	public SendResult sendJsonMessage(String message)
+	public SendResult sendJsonMessage(String message,Object tags)
 			throws MQClientException, RemotingException, InterruptedException,
 			MQBrokerException {
 		if(producer==null){
 			throw new MQClientException(-1,"SimpleOrderProducer为空");
 		}
 		producer.start();
-		Message msg = new Message(topic, tags.getCode(), message.getBytes(Charsets.UTF_8));
+		InsteadPayTagsEnum insteadPayTagsEnum =(InsteadPayTagsEnum) tags;
+		Message msg = new Message(topic, insteadPayTagsEnum.getCode(), message.getBytes(Charsets.UTF_8));
 		SendResult sendResult = producer.send(msg);
 		return sendResult;
 	}

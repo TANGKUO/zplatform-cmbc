@@ -21,9 +21,14 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.security.CryptoUtil;
+import com.zlebank.zplatform.cmbc.withholding.request.bean.RealNameAuthBean;
 import com.zlebank.zplatform.cmbc.withholding.request.bean.RealTimeWithholdingBean;
+import com.zlebank.zplatform.cmbc.withholding.request.bean.RealTimeWithholdingQueryBean;
+import com.zlebank.zplatform.cmbc.withholding.request.bean.WhiteListBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.RealNameAuthResultBean;
 import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.withholding.response.bean.RealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.withholding.response.bean.WhiteListResultBean;
 
 /**
  * <strong>Title : MessageHandler</strong><br>
@@ -208,6 +213,121 @@ public class MessageHandler {
 		}
 		return bytes;
 	}
+	
+	public byte[] pack(RealNameAuthBean realNameAuthBean) {
+		byte[] bytes = null;
+		try {
+			String charset = messageConfigService.getString("CHARSET");// 字符集
+			int headLength = messageConfigService.getInt("HEAD_LENGTH", 8);// 报文头长度
+			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 8);// 合作方编码长度
+			int messageCodeLength = messageConfigService.getInt("MESSAGE_CODE_LENGTH", 8);// 报文码长度
+			int signCodeLength = messageConfigService.getInt("SIGN_CODE_LENGTH", 4);// 签名编码长度
+			String companyCode = messageConfigService.getString("COMPANY_CODE");// 合作方编码
+			//PublicKey publicKey = (PublicKey) messageConfigService.getObject("PUBLIC_KEY");// 银行公钥
+			//PrivateKey privateKey = (PrivateKey) messageConfigService.getObject("PRIVATE_KEY");// 合作方私钥
+
+			String privateKey = Constant.getInstance().getCmbc_withholding_private_key();
+			String publicKey = Constant.getInstance().getCmbc_withholding_public_key();
+			
+			String messageCode = Constant.REALNAMEAUTH;
+			String xml = realNameAuthBean.toXMLExt();//realTimePayBean.toXML();
+			logger.info("本地--->对端明文{}:{}", new Object[] { messageCode, xml });
+			byte[] xmlBytes = xml.getBytes(charset);
+
+			byte[] signBytes = CryptoUtil.digitalSign(xmlBytes, privateKey, "SHA1WithRSA");// 签名
+			byte[] encryptedBytes = CryptoUtil.encrypt(xmlBytes, publicKey, 2048, 11, "RSA/ECB/PKCS1Padding");// 加密
+
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(StringUtils.leftPad(String.valueOf(companyCodeLength + messageCodeLength + signCodeLength + signBytes.length + encryptedBytes.length), headLength, "0"));
+			buffer.append(StringUtils.leftPad(companyCode, companyCodeLength, " "));
+			buffer.append(StringUtils.leftPad(messageCode, messageCodeLength, " "));
+			buffer.append(StringUtils.leftPad(String.valueOf(signBytes.length), signCodeLength, "0"));
+
+			bytes = ArrayUtils.addAll(bytes, buffer.toString().getBytes(charset));
+			bytes = ArrayUtils.addAll(bytes, signBytes);
+			bytes = ArrayUtils.addAll(bytes, encryptedBytes);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return bytes;
+	}
+	public byte[] pack(WhiteListBean whiteListBean) {
+		byte[] bytes = null;
+		try {
+			String charset = messageConfigService.getString("CHARSET");// 字符集
+			int headLength = messageConfigService.getInt("HEAD_LENGTH", 8);// 报文头长度
+			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 8);// 合作方编码长度
+			int messageCodeLength = messageConfigService.getInt("MESSAGE_CODE_LENGTH", 8);// 报文码长度
+			int signCodeLength = messageConfigService.getInt("SIGN_CODE_LENGTH", 4);// 签名编码长度
+			String companyCode = messageConfigService.getString("COMPANY_CODE");// 合作方编码
+			//PublicKey publicKey = (PublicKey) messageConfigService.getObject("PUBLIC_KEY");// 银行公钥
+			//PrivateKey privateKey = (PrivateKey) messageConfigService.getObject("PRIVATE_KEY");// 合作方私钥
+
+			String privateKey = Constant.getInstance().getCmbc_withholding_private_key();
+			String publicKey = Constant.getInstance().getCmbc_withholding_public_key();
+			
+			String messageCode = Constant.WHITELIST;
+			String xml = whiteListBean.toXMLExt();//realTimePayBean.toXML();
+			logger.info("本地--->对端明文{}:{}", new Object[] { messageCode, xml });
+			byte[] xmlBytes = xml.getBytes(charset);
+
+			byte[] signBytes = CryptoUtil.digitalSign(xmlBytes, privateKey, "SHA1WithRSA");// 签名
+			byte[] encryptedBytes = CryptoUtil.encrypt(xmlBytes, publicKey, 2048, 11, "RSA/ECB/PKCS1Padding");// 加密
+
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(StringUtils.leftPad(String.valueOf(companyCodeLength + messageCodeLength + signCodeLength + signBytes.length + encryptedBytes.length), headLength, "0"));
+			buffer.append(StringUtils.leftPad(companyCode, companyCodeLength, " "));
+			buffer.append(StringUtils.leftPad(messageCode, messageCodeLength, " "));
+			buffer.append(StringUtils.leftPad(String.valueOf(signBytes.length), signCodeLength, "0"));
+
+			bytes = ArrayUtils.addAll(bytes, buffer.toString().getBytes(charset));
+			bytes = ArrayUtils.addAll(bytes, signBytes);
+			bytes = ArrayUtils.addAll(bytes, encryptedBytes);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return bytes;
+	}
+	//
+	public byte[] pack(RealTimeWithholdingQueryBean realNameAuthQueryBean) {
+		byte[] bytes = null;
+		try {
+			String charset = messageConfigService.getString("CHARSET");// 字符集
+			int headLength = messageConfigService.getInt("HEAD_LENGTH", 8);// 报文头长度
+			int companyCodeLength = messageConfigService.getInt("COMPANY_CODE_LENGTH", 8);// 合作方编码长度
+			int messageCodeLength = messageConfigService.getInt("MESSAGE_CODE_LENGTH", 8);// 报文码长度
+			int signCodeLength = messageConfigService.getInt("SIGN_CODE_LENGTH", 4);// 签名编码长度
+			String companyCode = messageConfigService.getString("COMPANY_CODE");// 合作方编码
+			//PublicKey publicKey = (PublicKey) messageConfigService.getObject("PUBLIC_KEY");// 银行公钥
+			//PrivateKey privateKey = (PrivateKey) messageConfigService.getObject("PRIVATE_KEY");// 合作方私钥
+
+			String privateKey = Constant.getInstance().getCmbc_withholding_private_key();
+			String publicKey = Constant.getInstance().getCmbc_withholding_public_key();
+			
+			String messageCode = Constant.WITHHOLDINGQUERY;
+			String xml = realNameAuthQueryBean.toXMLExt();//realTimePayBean.toXML();
+			logger.info("本地--->对端明文{}:{}", new Object[] { messageCode, xml });
+			byte[] xmlBytes = xml.getBytes(charset);
+
+			byte[] signBytes = CryptoUtil.digitalSign(xmlBytes, privateKey, "SHA1WithRSA");// 签名
+			byte[] encryptedBytes = CryptoUtil.encrypt(xmlBytes, publicKey, 2048, 11, "RSA/ECB/PKCS1Padding");// 加密
+
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(StringUtils.leftPad(String.valueOf(companyCodeLength + messageCodeLength + signCodeLength + signBytes.length + encryptedBytes.length), headLength, "0"));
+			buffer.append(StringUtils.leftPad(companyCode, companyCodeLength, " "));
+			buffer.append(StringUtils.leftPad(messageCode, messageCodeLength, " "));
+			buffer.append(StringUtils.leftPad(String.valueOf(signBytes.length), signCodeLength, "0"));
+
+			bytes = ArrayUtils.addAll(bytes, buffer.toString().getBytes(charset));
+			bytes = ArrayUtils.addAll(bytes, signBytes);
+			bytes = ArrayUtils.addAll(bytes, encryptedBytes);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return bytes;
+	}
+	
+	
 	/*public byte[] pack(RealTimeQueryBean queryBean) {
 		byte[] bytes = null;
 		try {
@@ -294,6 +414,18 @@ public class MessageHandler {
 	            xstream.autodetectAnnotations(true);
 	            RealTimeWithholdingQueryResultBean queryResultBean = (RealTimeWithholdingQueryResultBean) xstream.fromXML(xml);
 	            resultMap.put("messagecode", Constant.WITHHOLDINGQUERY);
+	            resultMap.put("result", queryResultBean);
+			}else if(Constant.REALNAMEAUTH.equals(messageCode)){
+				xstream.processAnnotations(RealNameAuthResultBean.class);
+	            xstream.autodetectAnnotations(true);
+	            RealNameAuthResultBean queryResultBean = (RealNameAuthResultBean) xstream.fromXML(xml);
+	            resultMap.put("messagecode", Constant.REALNAMEAUTH);
+	            resultMap.put("result", queryResultBean);
+			}else if(Constant.WHITELIST.equals(messageCode)){
+				xstream.processAnnotations(WhiteListResultBean.class);
+	            xstream.autodetectAnnotations(true);
+	            WhiteListResultBean queryResultBean = (WhiteListResultBean) xstream.fromXML(xml);
+	            resultMap.put("messagecode", Constant.WHITELIST);
 	            resultMap.put("result", queryResultBean);
 			}
 			

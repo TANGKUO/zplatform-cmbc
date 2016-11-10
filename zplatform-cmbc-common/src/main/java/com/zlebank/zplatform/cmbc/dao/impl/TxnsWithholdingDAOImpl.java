@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zlebank.zplatform.cmbc.common.bean.CMBCRealNameResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.CMBCWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
@@ -101,6 +103,67 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         }
         int rows = query.executeUpdate();
         log.info("updateWithholdingResult() effect rows:"+rows);
+	}
+
+	/**
+	 *
+	 * @param realNameResultBean
+	 */
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void updateRealNameResult(CMBCRealNameResultBean realNameResultBean) {
+		// TODO Auto-generated method stub
+		StringBuffer updateHQL = new StringBuffer("update PojoTxnsWithholding set ");
+        updateHQL.append("exectype = ?,");
+        updateHQL.append("execcode = ?,");
+        updateHQL.append("execmsg = ?,");
+        updateHQL.append("settdate = ?,");
+        updateHQL.append("banktrandate = ?,");
+        updateHQL.append("banktrantime = ?,");
+        updateHQL.append("payserialno = ?,");
+        updateHQL.append("validatestatus = ?");
+        updateHQL.append("where serialno = ? ");
+        Query query = getSession().createQuery(updateHQL.toString());
+        Object[] paramaters = new Object[]{realNameResultBean.getExectype(),realNameResultBean.getExeccode(),realNameResultBean.getExecmsg(),realNameResultBean.getSettdate(),realNameResultBean.getSettdate(),realNameResultBean.getTranstime(),realNameResultBean.getPayserialno(),realNameResultBean.getValidatestatus(),realNameResultBean.getReqserialno()};
+        for(int i=0;i<paramaters.length;i++){
+        	query.setParameter(i, paramaters[i]);
+        }
+        int rows = query.executeUpdate();
+        log.info("updateRealNameResult() effect rows:"+rows);
+	}
+
+	/**
+	 *
+	 * @param withholdingQueryResultBean
+	 */
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Throwable.class)
+	public void updateWithholdingQueryResult(
+			CMBCWithholdingQueryResultBean withholdingQueryResultBean) {
+		// TODO Auto-generated method stub
+		StringBuffer updateHQL = new StringBuffer("update PojoTxnsWithholding set ");
+        updateHQL.append("exectype = ?,");
+        updateHQL.append("execcode = ?,");
+        updateHQL.append("execmsg = ?,");
+        updateHQL.append("settdate = ?,");
+        updateHQL.append("oriexectype = ?,");
+        updateHQL.append("oriexeccode = ?,");
+        updateHQL.append("oriexecmsg = ?");
+        updateHQL.append("where serialno = ? ");
+        Query query = getSession().createQuery(updateHQL.toString());
+        
+        Object[] paramaters = new Object[]{withholdingQueryResultBean.getExectype(),
+        		withholdingQueryResultBean.getExeccode(),
+        		withholdingQueryResultBean.getExecmsg(),
+        		withholdingQueryResultBean.getSettdate(),
+        		withholdingQueryResultBean.getOriexectype(),
+        		withholdingQueryResultBean.getOriexeccode(),
+        		withholdingQueryResultBean.getOriexecmsg(),
+        		withholdingQueryResultBean.getReqserialno()};
+        for(int i=0;i<paramaters.length;i++){
+        	query.setParameter(i, paramaters[i]);
+        }
+        int rows = query.executeUpdate();
 	}
 
     

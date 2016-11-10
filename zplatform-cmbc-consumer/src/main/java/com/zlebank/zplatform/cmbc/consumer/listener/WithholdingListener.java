@@ -27,7 +27,11 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.google.common.base.Charsets;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
+import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.consumer.enums.WithholdingTagsEnum;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCCrossLineQuickPayService;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCRealNameAuthService;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.ZlebankToCMBCWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.WithholdingCacheResultService;
 
@@ -50,6 +54,12 @@ public class WithholdingListener implements MessageListenerConcurrently{
 	private ZlebankToCMBCWithholdingService cmbcZlebankWithholdingService;
 	@Autowired
 	private WithholdingCacheResultService withholdingCacheResultService;
+	@Autowired
+	private CMBCRealNameAuthService cmbcRealNameAuthService; 
+	@Autowired
+	private CMBCWithholdingService cmbcWithholdingService;
+	@Autowired
+	private CMBCCrossLineQuickPayService cmbcCrossLineQuickPayService;
 	/**
 	 *
 	 * @param msgs
@@ -59,11 +69,12 @@ public class WithholdingListener implements MessageListenerConcurrently{
 	@Override
 	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
 			ConsumeConcurrentlyContext context) {
+		String json = null;
 		for (MessageExt msg : msgs) {
 			if (msg.getTopic().equals(RESOURCE.getString("cmbc.withholding.subscribe"))) {
 				WithholdingTagsEnum withholdingTagsEnum = WithholdingTagsEnum.fromValue(msg.getTags());
-				if(withholdingTagsEnum == WithholdingTagsEnum.WITHHOLDING){
-					String json = new String(msg.getBody(), Charsets.UTF_8);
+				if(withholdingTagsEnum == WithholdingTagsEnum.WITHHOLDING){//代扣
+					json = new String(msg.getBody(), Charsets.UTF_8);
 					log.info("接收到的MSG:" + json);
 					log.info("接收到的MSGID:" + msg.getMsgId());
 					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
@@ -80,6 +91,53 @@ public class WithholdingListener implements MessageListenerConcurrently{
 						e.printStackTrace();
 						resultBean = new ResultBean("T000", e.getLocalizedMessage());
 					}
+				}else if(withholdingTagsEnum == WithholdingTagsEnum.REALNAME){//实名认证
+					json = new String(msg.getBody(), Charsets.UTF_8);
+					log.info("接收到的MSG:" + json);
+					log.info("接收到的MSGID:" + msg.getMsgId());
+					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
+					if (tradeBean == null) {
+						log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
+						break;
+					}
+					ResultBean resultBean = null;
+					try {
+						resultBean = cmbcRealNameAuthService.realNameAuth(tradeBean);
+						withholdingCacheResultService.saveWithholdingResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
+					} catch (CMBCTradeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						resultBean = new ResultBean("T000", e.getMessage());
+					}catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						resultBean = new ResultBean("T000", e.getLocalizedMessage());
+					}
+				}else if(withholdingTagsEnum == WithholdingTagsEnum.WITHHOLDING_QUERY_ACCOUNTING){//交易查询后处理账务和交易数据
+					json = new String(msg.getBody(), Charsets.UTF_8);
+					log.info("接收到的MSG:" + json);
+					log.info("接收到的MSGID:" + msg.getMsgId());
+					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
+					if (tradeBean == null) {
+						log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
+						break;
+					}
+					ResultBean resultBean = cmbcWithholdingService.queryCrossLineTrade(tradeBean.getTxnseqno());
+					cmbcCrossLineQuickPayService.dealWithAccounting(tradeBean.getTxnseqno(), resultBean);
+					withholdingCacheResultService.saveWithholdingResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
+					
+					
+				}else if(withholdingTagsEnum == WithholdingTagsEnum.QUERY_TRADE){//只查询交易结果，无任何处理，并返回交易结果集合
+					json = new String(msg.getBody(), Charsets.UTF_8);
+					log.info("接收到的MSG:" + json);
+					log.info("接收到的MSGID:" + msg.getMsgId());
+					TradeBean tradeBean = JSON.parseObject(json,TradeBean.class);
+					if (tradeBean == null) {
+						log.warn("MSGID:{}JSON转换后为NULL,无法生成订单数据,原始消息数据为{}",msg.getMsgId(), json);
+						break;
+					}
+					ResultBean resultBean = cmbcWithholdingService.queryCrossLineTrade(tradeBean.getTxnseqno());
+					withholdingCacheResultService.saveWithholdingResult(KEY + msg.getMsgId(), JSON.toJSONString(resultBean));
 				}
 				
 

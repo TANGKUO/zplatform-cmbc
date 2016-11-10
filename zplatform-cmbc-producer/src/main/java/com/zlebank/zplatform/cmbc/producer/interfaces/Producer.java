@@ -29,27 +29,8 @@ import com.zlebank.zplatform.cmbc.producer.enums.WithholdingTagsEnum;
  */
 public interface Producer {
 
-	/**
-	 * 生产者发送信息
-	 * @param message
-	 * @param tags
-	 * @param sendCallback
-	 * @throws MQClientException
-	 * @throws RemotingException
-	 * @throws InterruptedException
-	 */
-	public void sendMessage(Object message,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
 	
-	/**
-	 * 生产者发送JSON信息
-	 * @param message
-	 * @param tags
-	 * @param sendCallback
-	 * @throws MQClientException
-	 * @throws RemotingException
-	 * @throws InterruptedException
-	 */
-	public void sendJsonMessage(String message,SendCallback sendCallback)throws MQClientException, RemotingException, InterruptedException;
+	
 	
 	/**
 	 * 生产者发送JSON信息
@@ -60,7 +41,7 @@ public interface Producer {
 	 * @throws RemotingException
 	 * @throws InterruptedException
 	 */
-	public SendResult sendJsonMessage(String message)throws MQClientException, RemotingException, InterruptedException,MQBrokerException;
+	public SendResult sendJsonMessage(String message,Object tags)throws MQClientException, RemotingException, InterruptedException,MQBrokerException;
 	
 	/**
 	 * 关闭生产者

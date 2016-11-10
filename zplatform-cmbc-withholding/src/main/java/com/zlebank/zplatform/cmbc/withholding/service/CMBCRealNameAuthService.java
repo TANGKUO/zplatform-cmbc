@@ -11,6 +11,7 @@
 package com.zlebank.zplatform.cmbc.withholding.service;
 
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
+import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
 
@@ -32,4 +33,11 @@ public interface CMBCRealNameAuthService {
      * @throws CMBCTradeException 
      */
     public ResultBean realNameAuth(PojoRealnameAuth realnameAuth) throws CMBCTradeException;
+    
+    /**
+     * 实名认证
+     * @param tradeBean
+     * @return
+     */
+    public ResultBean realNameAuth(TradeBean tradeBean) throws CMBCTradeException;
 }
