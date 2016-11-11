@@ -11,6 +11,7 @@
 package com.zlebank.zplatform.cmbc.queue.service;
 
 import com.zlebank.zplatform.cmbc.common.bean.CMBCTradeQueueBean;
+import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
 
 /**
  * Class Description
@@ -27,4 +28,11 @@ public interface TradeQueueService {
 	 * @param queueBean
 	 */
 	public void addInsteadPayQueue(CMBCTradeQueueBean queueBean);
+	
+	/**
+	 * 放入交易队列中
+	 * @param txnseqno 交易序列号
+	 * @param tradeStatFlagEnum 交易状态枚举
+	 */
+	public void addTradeQueue(String txnseqno,TradeStatFlagEnum tradeStatFlagEnum);
 }

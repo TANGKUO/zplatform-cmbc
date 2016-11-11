@@ -1,32 +1,27 @@
 package com.zlebank.zplatform.cmbc.withholding.service.impl;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
+import com.zlebank.zplatform.cmbc.common.enums.BankEnmu;
 import com.zlebank.zplatform.cmbc.common.enums.ChannelEnmu;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
-import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
 import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.bean.WithholdingMessageBean;
-import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.CMBCRealNameAuthService;
+import com.zlebank.zplatform.cmbc.withholding.service.CMBCWithholdingService;
 import com.zlebank.zplatform.cmbc.withholding.service.WithholdingService;
 
 /**
@@ -213,7 +208,11 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
     	String payerbankinscode = withholding.getPayerbankinscode();
     	if("05100000".equals(payerbankinscode)||"04100000".equals(payerbankinscode)){
     		withholding.setPayerbankinscode("03070000");
+    		withholding.setPayerbankname(BankEnmu.fromValue(payerbankinscode).getBankName());
     	}
-    	
+    	if("04010000".equals(payerbankinscode)){
+    		withholding.setPayerbankinscode("04012900");
+    		withholding.setPayerbankname(BankEnmu.fromValue("04012900").getBankName());
+    	}
     }
 }

@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCTradeQueueBean;
 import com.zlebank.zplatform.cmbc.common.enums.TradeQueueEnum;
+import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
+import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
+import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
 import com.zlebank.zplatform.cmbc.queue.service.TradeQueueService;
 
 /**
@@ -33,6 +36,8 @@ public class TradeQueueServiceImpl implements TradeQueueService {
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
+	@Autowired
+	private TxnsLogDAO txnsLogDAO;
 
 	/**
 	 *
@@ -50,4 +55,31 @@ public class TradeQueueServiceImpl implements TradeQueueService {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
+	/**
+	 *
+	 * @param txnseqno
+	 * @param tradeStatFlagEnum
+	 */
+	@Override
+	public void addTradeQueue(String txnseqno,
+			TradeStatFlagEnum tradeStatFlagEnum) {
+		// TODO Auto-generated method stub
+		txnsLogDAO.updateTradeStatFlag(txnseqno, tradeStatFlagEnum);
+		if(tradeStatFlagEnum==TradeStatFlagEnum.PAYING||tradeStatFlagEnum==TradeStatFlagEnum.OVERTIME){
+			PojoTxnsLog txnsLog = txnsLogDAO.getTxnsLogByTxnseqno(txnseqno);
+			CMBCTradeQueueBean queueBean = new CMBCTradeQueueBean();
+			queueBean.setBusiType(txnsLog.getBusitype());
+			queueBean.setPayInsti(txnsLog.getPayinst());
+			queueBean.setTxnDateTime(txnsLog.getTxndate()+txnsLog.getTxntime());
+			queueBean.setTxnseqno(txnseqno);
+			BoundListOperations<String, String> boundListOps = redisTemplate
+					.boundListOps(TradeQueueEnum.TRADEQUEUE.getName());
+			boundListOps.rightPush(JSON.toJSONString(queueBean));
+		}
+	}
+	
+	
 }
