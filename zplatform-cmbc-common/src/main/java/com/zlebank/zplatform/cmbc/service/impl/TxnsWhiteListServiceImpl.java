@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWhiteList;
 import com.zlebank.zplatform.cmbc.dao.TxnsWhiteListDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWhiteList;
 import com.zlebank.zplatform.cmbc.service.TxnsWhiteListService;
 /**
  * 

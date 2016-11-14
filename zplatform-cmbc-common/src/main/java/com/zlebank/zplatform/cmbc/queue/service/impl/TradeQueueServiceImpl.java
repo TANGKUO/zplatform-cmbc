@@ -19,8 +19,8 @@ import com.alibaba.fastjson.JSON;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCTradeQueueBean;
 import com.zlebank.zplatform.cmbc.common.enums.TradeQueueEnum;
 import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.queue.service.TradeQueueService;
 
 /**

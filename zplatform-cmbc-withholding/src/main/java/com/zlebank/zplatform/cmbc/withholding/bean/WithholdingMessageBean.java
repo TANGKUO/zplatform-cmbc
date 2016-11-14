@@ -10,7 +10,7 @@
  */
 package com.zlebank.zplatform.cmbc.withholding.bean;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 
 
 /**

@@ -29,12 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zlebank.zplatform.cmbc.common.bean.PayPartyBean;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
 import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsLog;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
 import com.zlebank.zplatform.cmbc.common.utils.UUIDUtil;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsLogDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoRspmsg;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsLog;
 
 /**
  * Class Description

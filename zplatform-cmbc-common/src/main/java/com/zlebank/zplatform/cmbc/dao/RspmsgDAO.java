@@ -11,7 +11,7 @@
 package com.zlebank.zplatform.cmbc.dao;
 
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
+import com.zlebank.zplatform.cmbc.pojo.PojoRspmsg;
 
 /**
  * Class Description

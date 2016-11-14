@@ -1,6 +1,6 @@
 package com.zlebank.zplatform.cmbc.dao;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWhiteList;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWhiteList;
 
 public interface TxnsWhiteListDAO extends BaseDAO<PojoTxnsWhiteList>{
     

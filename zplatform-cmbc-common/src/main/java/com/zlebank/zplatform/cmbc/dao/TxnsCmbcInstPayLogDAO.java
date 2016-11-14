@@ -13,7 +13,7 @@ package com.zlebank.zplatform.cmbc.dao;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsCmbcInstPayLog;
 
 
 /**

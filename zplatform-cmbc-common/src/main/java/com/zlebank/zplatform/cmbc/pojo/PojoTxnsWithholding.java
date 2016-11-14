@@ -1,4 +1,4 @@
-package com.zlebank.zplatform.cmbc.common.pojo;
+package com.zlebank.zplatform.cmbc.pojo;
 // Generated 2015-11-30 16:47:30 by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;

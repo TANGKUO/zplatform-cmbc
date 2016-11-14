@@ -13,7 +13,7 @@ package com.zlebank.zplatform.cmbc.dao;
 
 import java.util.List;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoProvince;
+import com.zlebank.zplatform.cmbc.pojo.PojoProvince;
 
 /**
  * Class Description

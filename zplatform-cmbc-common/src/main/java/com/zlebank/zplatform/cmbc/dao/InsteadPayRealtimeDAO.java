@@ -1,6 +1,6 @@
 package com.zlebank.zplatform.cmbc.dao;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoInsteadPayRealtime;
+import com.zlebank.zplatform.cmbc.pojo.PojoInsteadPayRealtime;
 
 /**
  * 

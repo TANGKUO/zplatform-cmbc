@@ -15,8 +15,8 @@ import java.io.Serializable;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.zlebank.zplatform.cmbc.common.enums.CertifTypeEnmu;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
+import com.zlebank.zplatform.cmbc.pojo.PojoRealnameAuth;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 
 /**
  * Class Description

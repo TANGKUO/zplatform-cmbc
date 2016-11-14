@@ -18,9 +18,9 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
 import com.zlebank.zplatform.cmbc.common.utils.DateUtil;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 
 /**
  * Class Description

@@ -1,4 +1,4 @@
-package com.zlebank.zplatform.cmbc.common.pojo;
+package com.zlebank.zplatform.cmbc.pojo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

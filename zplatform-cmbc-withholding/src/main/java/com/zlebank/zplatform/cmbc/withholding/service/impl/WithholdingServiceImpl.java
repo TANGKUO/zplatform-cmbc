@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.common.utils.Constant;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.security.RSAHelper;
 import com.zlebank.zplatform.cmbc.withholding.bean.CardMessageBean;
 import com.zlebank.zplatform.cmbc.withholding.bean.WhiteListMessageBean;

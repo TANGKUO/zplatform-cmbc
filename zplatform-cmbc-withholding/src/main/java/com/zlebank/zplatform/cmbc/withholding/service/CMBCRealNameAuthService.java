@@ -13,7 +13,7 @@ package com.zlebank.zplatform.cmbc.withholding.service;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.common.exception.CMBCTradeException;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRealnameAuth;
+import com.zlebank.zplatform.cmbc.pojo.PojoRealnameAuth;
 
 /**
  * Class Description

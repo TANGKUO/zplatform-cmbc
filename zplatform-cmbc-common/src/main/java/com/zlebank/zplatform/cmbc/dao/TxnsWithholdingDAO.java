@@ -3,7 +3,7 @@ package com.zlebank.zplatform.cmbc.dao;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealNameResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCWithholdingQueryResultBean;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 
 public interface TxnsWithholdingDAO extends BaseDAO<PojoTxnsWithholding>{
 

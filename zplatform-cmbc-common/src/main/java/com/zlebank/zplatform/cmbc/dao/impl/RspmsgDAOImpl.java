@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoRspmsg;
 
 /**
  * Class Description

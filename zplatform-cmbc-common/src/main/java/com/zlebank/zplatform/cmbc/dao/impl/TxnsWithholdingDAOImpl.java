@@ -14,8 +14,8 @@ import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCWithholdingQueryResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.dao.TxnsWithholdingDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 @Repository("txnsWithholdingDAO")
 public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithholding> implements TxnsWithholdingDAO{
 

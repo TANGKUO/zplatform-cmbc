@@ -1,4 +1,4 @@
-package com.zlebank.zplatform.cmbc.common.pojo;
+package com.zlebank.zplatform.cmbc.pojo;
 
 // Generated 2016-10-13 9:21:58 by Hibernate Tools 4.0.0
 

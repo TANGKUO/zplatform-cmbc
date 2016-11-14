@@ -18,8 +18,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsOrderinfo;
 import com.zlebank.zplatform.cmbc.dao.TxnsOrderinfoDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsOrderinfo;
 
 /**
  * Class Description

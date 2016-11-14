@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeWithholdingResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.ResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.TradeBean;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.dao.TxnsWithholdingDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
 @Service("txnsWithholdingService")
 public class TxnsWithholdingServiceImpl implements TxnsWithholdingService{

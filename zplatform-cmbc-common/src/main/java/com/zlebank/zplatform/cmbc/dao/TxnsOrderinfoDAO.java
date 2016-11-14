@@ -10,7 +10,7 @@
  */
 package com.zlebank.zplatform.cmbc.dao;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsOrderinfo;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsOrderinfo;
 
 /**
  * Class Description

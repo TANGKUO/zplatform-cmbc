@@ -14,10 +14,10 @@ import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayQueryResultB
 import com.zlebank.zplatform.cmbc.common.bean.CMBCRealTimeInsteadPayResultBean;
 import com.zlebank.zplatform.cmbc.common.bean.SingleReexchangeBean;
 import com.zlebank.zplatform.cmbc.common.enums.ChnlTypeEnum;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoRspmsg;
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsCmbcInstPayLog;
 import com.zlebank.zplatform.cmbc.dao.RspmsgDAO;
 import com.zlebank.zplatform.cmbc.dao.TxnsCmbcInstPayLogDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoRspmsg;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsCmbcInstPayLog;
 @Repository("txnsCmbcInstPayLogDAO")
 public class TxnsCmbcInstPayLogDAOImpl extends HibernateBaseDAOImpl<PojoTxnsCmbcInstPayLog> implements TxnsCmbcInstPayLogDAO {
 

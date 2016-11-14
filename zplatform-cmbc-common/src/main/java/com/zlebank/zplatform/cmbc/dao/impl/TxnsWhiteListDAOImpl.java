@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoTxnsWhiteList;
 import com.zlebank.zplatform.cmbc.dao.TxnsWhiteListDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWhiteList;
 @Repository("txnsWhiteListDAO")
 public class TxnsWhiteListDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWhiteList> implements TxnsWhiteListDAO{
 

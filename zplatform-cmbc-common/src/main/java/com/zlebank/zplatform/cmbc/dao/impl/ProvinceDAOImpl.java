@@ -17,8 +17,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoProvince;
 import com.zlebank.zplatform.cmbc.dao.ProvinceDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoProvince;
 
 /**
  * Class Description

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zlebank.zplatform.cmbc.common.pojo.PojoInsteadPayRealtime;
 import com.zlebank.zplatform.cmbc.dao.InsteadPayRealtimeDAO;
+import com.zlebank.zplatform.cmbc.pojo.PojoInsteadPayRealtime;
 
 
 @Repository("insteadPayRealtimeDAO")

@@ -8,7 +8,7 @@
  * Copyright (c) 2016,zlebank.All rights reserved.
  * 
  */
-package com.zlebank.zplatform.cmbc.common.pojo;
+package com.zlebank.zplatform.cmbc.pojo;
 
 import java.io.Serializable;
 
