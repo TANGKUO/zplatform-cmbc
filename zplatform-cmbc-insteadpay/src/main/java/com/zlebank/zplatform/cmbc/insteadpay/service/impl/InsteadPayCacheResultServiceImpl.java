@@ -10,11 +10,9 @@
  */
 package com.zlebank.zplatform.cmbc.insteadpay.service.impl;
 
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import com.zlebank.zplatform.cmbc.insteadpay.service.InsteadPayCacheResultService;
@@ -41,8 +39,10 @@ public class InsteadPayCacheResultServiceImpl implements
 	@Override
 	public void saveInsteadPayResult(String key, String json) {
 		// TODO Auto-generated method stub
-		ValueOperations<String, Object> opsForValue = redisTemplate.opsForValue();
-		opsForValue.set(key, json, 10, TimeUnit.MINUTES);
+		/*ValueOperations<String, Object> opsForValue = redisTemplate.opsForValue();
+		opsForValue.set(key, json, 10, TimeUnit.MINUTES);*/
+		BoundListOperations<String, Object> boundListOps = redisTemplate.boundListOps(key);
+		boundListOps.leftPush(json);
 	}
 
 }

@@ -38,7 +38,8 @@ public class RedisFactory {
     private RedisFactory() {
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(100);
-        pool = new JedisPool(config, RESOURCE.getString("redis.server.ip"));  
+        pool = new JedisPool(config, RESOURCE.getString("redis.server.ip")); 
+        log.info("redis ip:"+RESOURCE.getString("redis.server.ip"));
     }
     public static RedisFactory getInstance() {
         return instance;
@@ -49,6 +50,7 @@ public class RedisFactory {
             instance = new RedisFactory();
         }
         Jedis jedis = pool.getResource();
+       
         if (jedis== null || !jedis.isConnected()) {
             log.error("*****获取Redis实例失败*****");
         }

@@ -46,7 +46,7 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         updateHQL.append("execcode = ?,");
         updateHQL.append("execmsg = ?,");
         updateHQL.append("validatestatus = ?,");
-        updateHQL.append("payserialno = ?");
+        updateHQL.append("payserialno = ? ");
         updateHQL.append("where serialno = ? ");
         Query query = getSession().createQuery(updateHQL.toString());
         Object[] paramaters = new Object[]{withholding.getExectype(),withholding.getExeccode(),withholding.getExecmsg(),withholding.getValidatestatus(),withholding.getPayserialno(),withholding.getSerialno()};
@@ -67,7 +67,7 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
 		// TODO Auto-generated method stub
 		StringBuffer updateHQL = new StringBuffer("update PojoTxnsWithholding set ");
         updateHQL.append("execmsg = ?,");
-        updateHQL.append("validatestatus = ?");
+        updateHQL.append("validatestatus = ? ");
         updateHQL.append("where serialno = ? ");
         Query query = getSession().createQuery(updateHQL.toString());
         Object[] paramaters = new Object[]{withholding.getExecmsg(),"11",withholding.getSerialno()};
@@ -94,7 +94,7 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         updateHQL.append("settdate = ?,");
         updateHQL.append("banktrandate = ?,");
         updateHQL.append("banktrantime = ?,");
-        updateHQL.append("payserialno = ?");
+        updateHQL.append("payserialno = ? ");
         updateHQL.append("where serialno = ? ");
         Query query = getSession().createQuery(updateHQL.toString());
         Object[] paramaters = new Object[]{realTimeWithholdingResultBean.getExectype(),realTimeWithholdingResultBean.getExeccode(),realTimeWithholdingResultBean.getExecmsg(),realTimeWithholdingResultBean.getSettdate(),realTimeWithholdingResultBean.getSettdate(),realTimeWithholdingResultBean.getTranstime(),realTimeWithholdingResultBean.getPayserialno(),realTimeWithholdingResultBean.getReqserialno()};
@@ -121,7 +121,7 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         updateHQL.append("banktrandate = ?,");
         updateHQL.append("banktrantime = ?,");
         updateHQL.append("payserialno = ?,");
-        updateHQL.append("validatestatus = ?");
+        updateHQL.append("validatestatus = ? ");
         updateHQL.append("where serialno = ? ");
         Query query = getSession().createQuery(updateHQL.toString());
         Object[] paramaters = new Object[]{realNameResultBean.getExectype(),realNameResultBean.getExeccode(),realNameResultBean.getExecmsg(),realNameResultBean.getSettdate(),realNameResultBean.getSettdate(),realNameResultBean.getTranstime(),realNameResultBean.getPayserialno(),realNameResultBean.getValidatestatus(),realNameResultBean.getReqserialno()};
@@ -148,7 +148,7 @@ public class TxnsWithholdingDAOImpl extends HibernateBaseDAOImpl<PojoTxnsWithhol
         updateHQL.append("settdate = ?,");
         updateHQL.append("oriexectype = ?,");
         updateHQL.append("oriexeccode = ?,");
-        updateHQL.append("oriexecmsg = ?");
+        updateHQL.append("oriexecmsg = ? ");
         updateHQL.append("where serialno = ? ");
         Query query = getSession().createQuery(updateHQL.toString());
         

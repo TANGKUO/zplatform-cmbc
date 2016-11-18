@@ -116,7 +116,7 @@ public class InsteadPaySpringProducer implements Producer {
 		logger.info("【InsteadPayProducer receive Result message】{}",JSON.toJSONString(sendResult));
 		logger.info("msgID:{}",sendResult.getMsgId());
 		
-		for (int i = 0;i<100;i++) {
+		for (int i = 0;i<1;i++) {
 			String json = getJsonByCycle(sendResult.getMsgId());
 			logger.info("从redis中取得key【{}】值为{}",KEY+sendResult.getMsgId(),json);
 			if(StringUtils.isNotEmpty(json)){
@@ -139,6 +139,7 @@ public class InsteadPaySpringProducer implements Producer {
 	private String getJsonByCycle(String msgId){
 		Jedis jedis = RedisFactory.getInstance().getRedis();
 		//String tn = jedis.get(KEY+msgId);
+		logger.info("redis get key:"+KEY+msgId);
 		List<String> brpop = jedis.brpop(40, KEY+msgId);
 		if(brpop.size()>0){
 			String tn = brpop.get(1);

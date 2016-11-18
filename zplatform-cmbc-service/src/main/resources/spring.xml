@@ -33,7 +33,7 @@
 		<!-- 注解方式配置 -->
 		<property name="packagesToScan">
 			<list>
-				<value>com.zlebank.zplatform.cmbc.common.pojo</value>
+				<value>com.zlebank.zplatform.cmbc.pojo</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
