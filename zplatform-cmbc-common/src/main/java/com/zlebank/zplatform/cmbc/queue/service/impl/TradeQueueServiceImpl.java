@@ -44,7 +44,7 @@ public class TradeQueueServiceImpl implements TradeQueueService {
 	 * @param queueBean
 	 */
 	@Override
-	public void addInsteadPayQueue(CMBCTradeQueueBean queueBean) {
+	public void addTradeQueue(CMBCTradeQueueBean queueBean) {
 		// TODO Auto-generated method stub
 		try {
 			BoundListOperations<String, String> boundListOps = redisTemplate

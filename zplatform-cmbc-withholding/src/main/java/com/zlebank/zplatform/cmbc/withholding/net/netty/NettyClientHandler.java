@@ -59,7 +59,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<byte[]>{
 	 * @throws Exception
 	 */
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, byte[] msg)
+	protected synchronized void channelRead0(ChannelHandlerContext ctx, byte[] msg)
 			throws Exception {
 		// TODO Auto-generated method stub
 		SocketChannelHelper socketChannelHelper = SocketChannelHelper.getInstance();

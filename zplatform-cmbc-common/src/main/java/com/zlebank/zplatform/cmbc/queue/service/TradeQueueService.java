@@ -24,10 +24,10 @@ import com.zlebank.zplatform.cmbc.common.enums.TradeStatFlagEnum;
 public interface TradeQueueService {
 
 	/**
-	 * 将代付交易（未知状态）放入队列（redis）中
+	 * 将交易（未知状态）放入队列（redis）中
 	 * @param queueBean
 	 */
-	public void addInsteadPayQueue(CMBCTradeQueueBean queueBean);
+	public void addTradeQueue(CMBCTradeQueueBean queueBean);
 	
 	/**
 	 * 放入交易队列中

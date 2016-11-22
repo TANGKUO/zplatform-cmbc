@@ -124,7 +124,7 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 				queueBean.setBusiType(txnsLog.getBusitype());
 				queueBean.setTxnDateTime(txnsLog.getTxntime());
 				//加入交易查询队列
-				tradeQueueService.addInsteadPayQueue(queueBean);
+				tradeQueueService.addTradeQueue(queueBean);
 				return resultBean;
 			}
 			
@@ -302,7 +302,7 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 				queueBean.setBusiType(txnsLog.getBusitype());
 				queueBean.setTxnDateTime(txnsLog.getTxntime());
 				//加入交易查询队列
-				tradeQueueService.addInsteadPayQueue(queueBean);
+				tradeQueueService.addTradeQueue(queueBean);
 				return;
 			}
 			
@@ -314,7 +314,7 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 				queueBean.setBusiType(txnsLog.getBusitype());
 				queueBean.setTxnDateTime(txnsLog.getTxntime());
 				//加入交易查询队列
-				tradeQueueService.addInsteadPayQueue(queueBean);
+				tradeQueueService.addTradeQueue(queueBean);
 				return;
 			}
 		}

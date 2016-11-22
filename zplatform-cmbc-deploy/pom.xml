@@ -360,5 +360,6 @@
 		<module>../zplatform-cmbc-consumer</module>
 		<module>../zplatform-cmbc-producer</module>
 		<module>../zplatform-cmbc-service</module>
+		<module>../zplatform-cmbc-simple</module>
 	</modules>
 </project>

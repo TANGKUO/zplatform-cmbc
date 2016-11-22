@@ -130,7 +130,7 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 					queueBean.setBusiType(txnsLog.getBusitype());
 					queueBean.setTxnDateTime(txnsLog.getTxntime());
 					//加入交易查询队列
-					tradeQueueService.addInsteadPayQueue(queueBean);
+					tradeQueueService.addTradeQueue(queueBean);
 					return resultBean;
 				}else{
 					txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
