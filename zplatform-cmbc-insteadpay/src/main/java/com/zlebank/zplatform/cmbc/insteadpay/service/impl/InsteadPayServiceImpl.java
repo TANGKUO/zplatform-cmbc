@@ -115,16 +115,11 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 		if(resultBean.isResultBool()){
 			insteadPayRealtimeDAO.updateInsteadSuccess(insteadPayTradeBean.getTxnseqno());
 		}else{
-			if(!resultBean.getErrCode().equals("R")){
+			if(!resultBean.getErrCode().equals("E")){
 				insteadPayRealtimeDAO.updateInsteadFail(insteadPayTradeBean.getTxnseqno(), resultBean.getErrCode(), resultBean.getErrMsg());
 			}else{
-				CMBCTradeQueueBean queueBean = new CMBCTradeQueueBean();
-				queueBean.setTxnseqno(txnsLog.getTxnseqno());
-				queueBean.setPayInsti(ChannelEnmu.CMBCINSTEADPAY_REALTIME.getChnlcode());
-				queueBean.setBusiType(txnsLog.getBusitype());
-				queueBean.setTxnDateTime(txnsLog.getTxntime());
 				//加入交易查询队列
-				tradeQueueService.addTradeQueue(queueBean);
+				tradeQueueService.addTradeQueue(txnsLog.getTxnseqno());
 				return resultBean;
 			}
 			
@@ -158,9 +153,9 @@ public class InsteadPayServiceImpl implements InsteadPayService {
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            resultBean = new ResultBean("09", e.getMessage());
+            resultBean = new ResultBean("T000", e.getMessage());
         }
-        resultBean = new ResultBean("R", "交易超时，请稍后查询交易结果");
+        resultBean = new ResultBean("T000", "交易超时，请稍后查询交易结果");
 		return resultBean;
 	}
 
@@ -209,7 +204,6 @@ public class InsteadPayServiceImpl implements InsteadPayService {
 		payPartyBean.setPayretcode(cmbcInstPayLog.getRespCode());
         payPartyBean.setPayretinfo(cmbcInstPayLog.getRespMsg());
         txnsLogDAO.updateCMBCTradeData(payPartyBean);
-        //AppPartyBean appParty = new AppPartyBean("","000000000000", commiteTime,DateUtil.getCurrentDateTime(), txnseqno, "");
         txnsLogDAO.updateAppInfo(cmbcInstPayLog.getTxnseqno());
         tradeAccountingService.accountingFor(cmbcInstPayLog.getTxnseqno());
         if("S".equals(cmbcInstPayLog.getRespType())){

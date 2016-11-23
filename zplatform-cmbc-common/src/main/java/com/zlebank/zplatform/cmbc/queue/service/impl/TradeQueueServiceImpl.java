@@ -80,6 +80,26 @@ public class TradeQueueServiceImpl implements TradeQueueService {
 			boundListOps.rightPush(JSON.toJSONString(queueBean));
 		}
 	}
+
+
+
+	/**
+	 *
+	 * @param txnseqno
+	 */
+	@Override
+	public void addTradeQueue(String txnseqno) {
+		// TODO Auto-generated method stub
+		PojoTxnsLog txnsLog = txnsLogDAO.getTxnsLogByTxnseqno(txnseqno);
+		CMBCTradeQueueBean queueBean = new CMBCTradeQueueBean();
+		queueBean.setBusiType(txnsLog.getBusitype());
+		queueBean.setPayInsti(txnsLog.getPayinst());
+		queueBean.setTxnDateTime(txnsLog.getTxndate()+txnsLog.getTxntime());
+		queueBean.setTxnseqno(txnseqno);
+		BoundListOperations<String, String> boundListOps = redisTemplate
+				.boundListOps(TradeQueueEnum.TRADEQUEUE.getName());
+		boundListOps.rightPush(JSON.toJSONString(queueBean));
+	}
 	
 	
 }

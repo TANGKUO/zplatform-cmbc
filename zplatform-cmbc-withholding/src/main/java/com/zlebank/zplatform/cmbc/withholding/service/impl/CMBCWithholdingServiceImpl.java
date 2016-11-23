@@ -92,7 +92,7 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
                         return resultBean;
                     }else if("E".equalsIgnoreCase(withholding.getExectype())){
                     	PojoRspmsg msg = rspmsgDAO.getRspmsgByChnlCode(ChnlTypeEnum.CMBCWITHHOLDING, withholding.getExeccode());
-                        resultBean = new ResultBean(msg.getWebrspcode(),msg.getRspinfo());
+                        resultBean = new ResultBean("E",msg.getRspinfo());
                         resultBean.setResultObj(withholding);
                         return resultBean;
                     }else if("R".equalsIgnoreCase(withholding.getExectype())){
@@ -100,7 +100,6 @@ public class CMBCWithholdingServiceImpl implements CMBCWithholdingService{
                         continue;
                     }
                 }
-                //Thread.sleep(timeArray[i]);
                 TimeUnit.SECONDS.sleep(timeArray[i]);
             }
         } catch (InterruptedException e) {

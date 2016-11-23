@@ -35,4 +35,10 @@ public interface TradeQueueService {
 	 * @param tradeStatFlagEnum 交易状态枚举
 	 */
 	public void addTradeQueue(String txnseqno,TradeStatFlagEnum tradeStatFlagEnum);
+	
+	/**
+	 * 将交易放入交易队列中，等待查询
+	 * @param txnseqno 交易序列号
+	 */
+	public void addTradeQueue(String txnseqno);
 }

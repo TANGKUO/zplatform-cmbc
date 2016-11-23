@@ -80,7 +80,6 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 		try {
 			// 卡信息进行实名认证
 			PojoRealnameAuth realnameAuth = new PojoRealnameAuth(tradeBean);
-			
 			resultBean = cmbcRealNameAuthService.realNameAuth(realnameAuth);
 		} catch (CMBCTradeException e1) {
 			// TODO Auto-generated catch block
@@ -104,43 +103,32 @@ public class CMBCCrossLineQuickPayServiceImpl implements CMBCCrossLineQuickPaySe
 			log.info("CMBC submit Pay start!");
 			resultBean = null;
 			// 更新支付方信息
-			PayPartyBean payPartyBean = new PayPartyBean(tradeBean.getTxnseqno(),
-					"01", serialNumberService.generateCMBCSerialNo(), ChannelEnmu.CMBCWITHHOLDING.getChnlcode(),
+			PayPartyBean payPartyBean = new PayPartyBean(tradeBean.getTxnseqno(),"01", serialNumberService.generateCMBCSerialNo(), ChannelEnmu.CMBCWITHHOLDING.getChnlcode(),
 					Constant.getInstance().getCmbc_merid(), "",
 					DateUtil.getCurrentDateTime(), "", tradeBean.getCardNo());
 			payPartyBean.setPanName(tradeBean.getAcctName());
 			txnsLogDAO.updatePayInfo(payPartyBean);
 			tradeBean.setPayOrderNo(payPartyBean.getPayordno());
 			tradeBean.setPayinstiId(ChannelEnmu.CMBCWITHHOLDING.getChnlcode());
-			// 获取持卡人所属省份代码
+			// 获取持卡人所属省份代码 （民生银行报文中的要求）
 			tradeBean.setProvno(provinceDAO.getProvinceByXZCode(tradeBean.getCertId().substring(0, 2)).getProvinceId()+ "");
 			// 记录快捷交易流水
 			txnsLogDAO.updateTradeStatFlag(tradeBean.getTxnseqno(), TradeStatFlagEnum.PAYING);
 			resultBean = cmbcWithholdingService.crossLineWithhold(tradeBean);
 			if(resultBean.isResultBool()) {
-				//PojoTxnsWithholding withholding = (PojoTxnsWithholding) resultBean.getResultObj();
 				//更新订单状态
 	            txnsOrderinfoDAO.updateOrderToSuccess(tradeBean.getTxnseqno());
 			} else {// 交易失败
-				if("R".equals(resultBean.getErrCode())){
-					PojoTxnsLog txnsLog = txnsLogDAO.getTxnsLogByTxnseqno(tradeBean.getTxnseqno());
-					CMBCTradeQueueBean queueBean = new CMBCTradeQueueBean();
-					queueBean.setTxnseqno(txnsLog.getTxnseqno());
-					queueBean.setPayInsti(ChannelEnmu.CMBCINSTEADPAY_REALTIME.getChnlcode());
-					queueBean.setBusiType(txnsLog.getBusitype());
-					queueBean.setTxnDateTime(txnsLog.getTxntime());
-					//加入交易查询队列
-					tradeQueueService.addTradeQueue(queueBean);
-					return resultBean;
-				}else{
+				if("E".equals(resultBean.getErrCode())){
 					txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
 					return resultBean;
-					
+				}else{
+					//加入交易查询队列
+					tradeQueueService.addTradeQueue(tradeBean.getTxnseqno());
+					return resultBean;
 				}
-				
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			txnsOrderinfoDAO.updateOrderToFail(tradeBean.getTxnseqno());
 			resultBean = new ResultBean("T000", "交易失败");
