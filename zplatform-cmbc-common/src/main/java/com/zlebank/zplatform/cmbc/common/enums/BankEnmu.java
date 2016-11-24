@@ -34,6 +34,7 @@ public enum BankEnmu {
     SPDB("03100000","浦发银行"),
     LZ("04470000","兰州银行"),
     SHANGHAI("04012900","上海银行"),
+    CMSB("03050000","民生银行"),
     UNKNOW("","");//未知
     private String bankcode;
     private String bankname;

@@ -326,7 +326,7 @@ public class PojoTxnsWithholding implements java.io.Serializable {
                 this.chnlcode = ChannelEnmu.CMBCWITHHOLDING.getChnlcode();
                 break;
 
-            /*case  CMBCSELFWITHHOLDING:
+            case  CMBCSELFWITHHOLDING:
                 this.merid = Constant.getInstance().getCmbc_self_merid();
                 this.mername = Constant.getInstance().getCmbc_mername();
                 this.transdate = DateUtil.getCurrentDate();
@@ -343,8 +343,8 @@ public class PojoTxnsWithholding implements java.io.Serializable {
                 this.memberid = trade.getMerchId();
                 this.orderno = trade.getOrderId();
                 this.payerbankname = BankEnmu.fromValue(payerbankinscode).getBankName();
-                this.cvn2 = StringUtil.isEmpty(trade.getCvv2())?"":trade.getCvv2();
-                this.expired = (StringUtil.isEmpty(trade.getMonth())?"":trade.getMonth())+(StringUtil.isEmpty(trade.getYear())?"":trade.getYear());
+                this.cvn2 = StringUtils.isEmpty(trade.getCvv2())?"":trade.getCvv2();
+                this.expired = (StringUtils.isEmpty(trade.getMonth())?"":trade.getMonth())+(StringUtils.isEmpty(trade.getYear())?"":trade.getYear());
                 this.biztype = "";
                 this.bizno = "";
                 this.tranamt = new BigDecimal(Long.valueOf(trade.getAmount()));
@@ -356,7 +356,7 @@ public class PojoTxnsWithholding implements java.io.Serializable {
                 this.chnlcode = ChannelEnmu.CMBCSELFWITHHOLDING.getChnlcode();
                 break;
                 
-            case CHANPAYCOLLECTMONEY:
+           /* case CHANPAYCOLLECTMONEY:
             	this.merid = Constant.getInstance().getChanpay_cj_merchant_id();
                 this.mername = Constant.getInstance().getChanpay_cj_merchant_name();
                 this.transdate = DateUtil.getCurrentDate();
@@ -785,6 +785,7 @@ public class PojoTxnsWithholding implements java.io.Serializable {
     public void setChnlcode(String chnlcode) {
         this.chnlcode = chnlcode;
     }
+    
     
     
 }

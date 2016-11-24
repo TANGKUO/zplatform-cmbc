@@ -42,6 +42,8 @@ public class Constant {
     public static final String WITHHOLDINGSELF = "1009";
     public static final String WITHHOLDINGSELFQUERY = "3009";
     
+    public static final String WITHHOLDINGSELF_REALNAME = "1104";
+    public static final String WITHHOLDINGSELF_REALNAMEQUERY = "3104";
     
     public static final String REALTIME_INSTEADPAY = "1002";
     public static final String REALTIME_INSTEADPAY_QUERY = "3002";
