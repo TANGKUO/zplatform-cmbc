@@ -37,15 +37,18 @@ import com.zlebank.zplatform.cmbc.pojo.PojoTxnsWithholding;
 import com.zlebank.zplatform.cmbc.queue.service.TradeQueueService;
 import com.zlebank.zplatform.cmbc.sequence.service.SerialNumberService;
 import com.zlebank.zplatform.cmbc.service.TxnsWithholdingService;
-import com.zlebank.zplatform.cmbc.withholding.self.bean.TradeBean;
 import com.zlebank.zplatform.cmbc.withholding.self.bean.WithholdingMessageBean;
+import com.zlebank.zplatform.cmbc.withholding.self.bean.WithholdingSelfTradeBean;
 import com.zlebank.zplatform.cmbc.withholding.self.net.netty.NettyClientBootstrap;
 import com.zlebank.zplatform.cmbc.withholding.self.net.netty.SocketChannelHelper;
 import com.zlebank.zplatform.cmbc.withholding.self.request.bean.RealTimeSelfWithholdingBean;
+import com.zlebank.zplatform.framework.trade.bean.ResultBean;
+import com.zlebank.zplatform.framework.trade.bean.TradeBean;
+import com.zlebank.zplatform.framework.trade.semisync.AbstractSemiSyncTrade;
 import com.zlebank.zplatform.task.service.TradeNotifyService;
 import com.zlebank.zplatform.trade.acc.service.TradeAccountingService;
-import com.zlebank.zplatform.trade.bean.ResultBean;
-import com.zlebank.zplatform.trade.semisync.AbstractSemiSyncTrade;
+
+
 
 /**
  * Class Description
@@ -56,7 +59,7 @@ import com.zlebank.zplatform.trade.semisync.AbstractSemiSyncTrade;
  * @since 
  */
 @Service
-public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
+public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade{
 
 	private static final Logger logger = LoggerFactory.getLogger(CMBCSelfWithholdingTrade.class);
 	@Autowired
@@ -82,14 +85,18 @@ public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
 	 */
 	@Override
 	public ResultBean queryTrade(TradeBean tradeBean) {
-		String serialno = tradeBean.getWithholdingMessageBean().getWithholding().getSerialno();
+		WithholdingSelfTradeBean withholdingSelfTradeBean = null;
+		if(tradeBean instanceof WithholdingSelfTradeBean){
+			 withholdingSelfTradeBean = (WithholdingSelfTradeBean)tradeBean;
+		}
+		String serialno = withholdingSelfTradeBean.getWithholdingMessageBean().getWithholding().getSerialno();
 		PojoTxnsWithholding withholding = null;
         ResultBean resultBean = null;
         int[] timeArray = new int[]{1, 2, 8, 16, 32};
         try {
             for (int i = 0; i < 5; i++) {
                 withholding = txnsWithholdingService.getWithholdingBySerialNo(serialno);
-                tradeBean.setWithholding(withholding);
+                withholdingSelfTradeBean.setTxnsWithholding(withholding);
                 if(!StringUtils.isEmpty(withholding.getExectype())){
                     if("S".equalsIgnoreCase(withholding.getExectype())){
                         resultBean = new ResultBean(withholding);
@@ -130,12 +137,16 @@ public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
 	@Override
 	public void saveTradeLog(TradeBean tradeBean) {
 		// TODO Auto-generated method stub
-		PojoTxnsWithholding withholding = createCMBCSelfPojo(tradeBean);
-        withholding.setSerialno(serialNumberService.generateCMBCSerialNo());
-        txnsWithholdingService.saveWithholdingLog(withholding);
-        WithholdingMessageBean withholdingMsg = new WithholdingMessageBean(withholding);
-        withholdingMsg.setWithholding(withholding);
-        tradeBean.setWithholdingMessageBean(withholdingMsg);
+		if(tradeBean instanceof WithholdingSelfTradeBean){
+			WithholdingSelfTradeBean withholdingSelfTradeBean = (WithholdingSelfTradeBean)tradeBean;
+			PojoTxnsWithholding withholding = createCMBCSelfPojo(tradeBean);
+	        withholding.setSerialno(serialNumberService.generateCMBCSerialNo());
+	        txnsWithholdingService.saveWithholdingLog(withholding);
+	        WithholdingMessageBean withholdingMsg = new WithholdingMessageBean(withholding);
+	        withholdingMsg.setWithholding(withholding);
+	        withholdingSelfTradeBean.setWithholdingMessageBean(withholdingMsg);
+		}
+		
 	}
 
 	/**
@@ -145,7 +156,7 @@ public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
 	 */
 	@Override
 	public void sendTradeMessage(TradeBean tradeBean) {
-		final RealTimeSelfWithholdingBean realTimeSelfWithholdingBean = new RealTimeSelfWithholdingBean(tradeBean.getWithholdingMessageBean());
+		final RealTimeSelfWithholdingBean realTimeSelfWithholdingBean = new RealTimeSelfWithholdingBean(((WithholdingSelfTradeBean)tradeBean).getWithholdingMessageBean());
 		// 初始化线程池
 		ExecutorService executors = Executors.newFixedThreadPool(1);
 		executors.execute(new Runnable() {
@@ -183,7 +194,11 @@ public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
 	 */
 	@Override
 	public void dealWithTradeResult(TradeBean tradeBean) {
-		PojoTxnsWithholding withholding = tradeBean.getWithholding();
+		WithholdingSelfTradeBean withholdingSelfTradeBean = null;
+		if(tradeBean instanceof WithholdingSelfTradeBean){
+			 withholdingSelfTradeBean = (WithholdingSelfTradeBean)tradeBean;
+		}
+		PojoTxnsWithholding withholding = withholdingSelfTradeBean.getTxnsWithholding();
 		PayPartyBean payPartyBean = null;
         if(StringUtils.isNotEmpty(withholding.getOrireqserialno())){
             PojoTxnsWithholding old_withholding = txnsWithholdingService.getWithholdingBySerialNo(withholding.getOrireqserialno());
@@ -208,36 +223,40 @@ public class CMBCSelfWithholdingTrade extends AbstractSemiSyncTrade<TradeBean>{
 	}
 	
 	
-	public PojoTxnsWithholding createCMBCSelfPojo(TradeBean trade){
-		PojoTxnsWithholding txnsWithholding = new PojoTxnsWithholding();
-    	txnsWithholding.setMerid( Constant.getInstance().getCmbc_self_merid());
-        txnsWithholding.setMername(Constant.getInstance().getCmbc_mername());
-        txnsWithholding.setTransdate(DateUtil.getCurrentDate());
-        txnsWithholding.setTranstime(DateUtil.getCurrentTime());;
-        txnsWithholding.setServicecode(Constant.WITHHOLDINGSELF);
-        txnsWithholding.setCardtype(CMBCCardTypeEnum.fromCardType(trade.getCardType()).getCode());
-        txnsWithholding.setAccno(trade.getCardNo());
-        txnsWithholding.setAccname(trade.getAcctName());
-        txnsWithholding.setCerttype(CertifTypeEnmu.fromValue("01").getCmbcCode());
-        txnsWithholding.setCertno(trade.getCertId());
-        txnsWithholding.setPhone(trade.getMobile());
-        txnsWithholding.setPayerbankinscode(trade.getBankCode().trim().length()==8?trade.getBankCode().trim():trade.getBankCode()+"0000");
-        txnsWithholding.setProvno("");
-        txnsWithholding.setMemberid(trade.getMerchId());
-        txnsWithholding.setOrderno(trade.getOrderId());
-        txnsWithholding.setPayerbankname(BankEnmu.fromValue(txnsWithholding.getPayerbankinscode()).getBankName());
-        txnsWithholding.setCvn2(StringUtils.isEmpty(trade.getCvv2())?"":trade.getCvv2());
-        txnsWithholding.setExpired(trade.getValidthru());
-        txnsWithholding.setBiztype("");
-        txnsWithholding.setBizno("");
-        txnsWithholding.setTranamt(new BigDecimal(Long.valueOf(trade.getAmount())));
-        txnsWithholding.setCurrency("RMB");
-        txnsWithholding.setPurpose("代收业务");
-        txnsWithholding.setCityno("");
-        txnsWithholding.setAgtno("");
-        txnsWithholding.setTxnseqno(trade.getTxnseqno());
-        txnsWithholding.setChnlcode(ChannelEnmu.CMBCSELFWITHHOLDING.getChnlcode());
-		return txnsWithholding;
+	public PojoTxnsWithholding createCMBCSelfPojo(TradeBean tradeBean){
+		if(tradeBean instanceof WithholdingSelfTradeBean){
+			WithholdingSelfTradeBean withholdingSelfTradeBean = (WithholdingSelfTradeBean)tradeBean;
+			PojoTxnsWithholding txnsWithholding = new PojoTxnsWithholding();
+	    	txnsWithholding.setMerid( Constant.getInstance().getCmbc_self_merid());
+	        txnsWithholding.setMername(Constant.getInstance().getCmbc_mername());
+	        txnsWithholding.setTransdate(DateUtil.getCurrentDate());
+	        txnsWithholding.setTranstime(DateUtil.getCurrentTime());;
+	        txnsWithholding.setServicecode(Constant.WITHHOLDINGSELF);
+	        txnsWithholding.setCardtype(CMBCCardTypeEnum.fromCardType(withholdingSelfTradeBean.getOutBankCard().getCardType()).getCode());
+	        txnsWithholding.setAccno(withholdingSelfTradeBean.getOutBankCard().getCardNo());
+	        txnsWithholding.setAccname(withholdingSelfTradeBean.getOutBankCard().getCardKeeper());
+	        txnsWithholding.setCerttype(CertifTypeEnmu.fromValue("01").getCmbcCode());
+	        txnsWithholding.setCertno(withholdingSelfTradeBean.getOutBankCard().getCertNo());
+	        txnsWithholding.setPhone(withholdingSelfTradeBean.getOutBankCard().getPhone());
+	        txnsWithholding.setPayerbankinscode(withholdingSelfTradeBean.getOutBankCard().getBankCode().trim().length()==8?withholdingSelfTradeBean.getOutBankCard().getBankCode().trim():withholdingSelfTradeBean.getOutBankCard().getBankCode()+"0000");
+	        txnsWithholding.setProvno("");
+	        txnsWithholding.setMemberid(withholdingSelfTradeBean.getMerchNo());
+	        txnsWithholding.setOrderno(withholdingSelfTradeBean.getMerchOrderNo());
+	        txnsWithholding.setPayerbankname(BankEnmu.fromValue(txnsWithholding.getPayerbankinscode()).getBankName());
+	        txnsWithholding.setCvn2(StringUtils.isEmpty(withholdingSelfTradeBean.getOutBankCard().getCvn())?"":withholdingSelfTradeBean.getOutBankCard().getCvn());
+	        txnsWithholding.setExpired(withholdingSelfTradeBean.getOutBankCard().getExpired());
+	        txnsWithholding.setBiztype("");
+	        txnsWithholding.setBizno("");
+	        txnsWithholding.setTranamt(new BigDecimal(Long.valueOf(withholdingSelfTradeBean.getTxnAmt())));
+	        txnsWithholding.setCurrency("RMB");
+	        txnsWithholding.setPurpose("代收业务");
+	        txnsWithholding.setCityno("");
+	        txnsWithholding.setAgtno("");
+	        txnsWithholding.setTxnseqno(withholdingSelfTradeBean.getTxnseqno());
+	        txnsWithholding.setChnlcode(ChannelEnmu.CMBCSELFWITHHOLDING.getChnlcode());
+	        return txnsWithholding;
+		}
+		return null;
     }
 
 }

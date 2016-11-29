@@ -103,7 +103,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<byte[]>{
 		}
 		byte[] bodyBytes = ArrayUtils.subarray(bytes, headLength, headLength + bodyLength);
 		logger.info("本地[{}] <-- 对端[{}-{}:{}] ## {}", new Object[] {socketHelper.getSocketKey(), hostName, hostAddress, hostPort, CryptoUtil.bytes2string(bodyBytes, 16) });
-		//receiveQueue.put(bodyBytes);
 		Map<String, Object> dataContainer = socketChannelHelper.getMessageHandler().unpack(bodyBytes);
 		if (dataContainer != null) {
 			String respType = StringUtils.trimToNull((String) dataContainer.get("YHYDLX"));
@@ -125,11 +124,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<byte[]>{
 				}
 			}
 		}
-		
 		bytes = ArrayUtils.subarray(bytes, headLength + bodyLength, bytes.length);
 		socketHelper.setReceivedBytes(bytes);
-		
-		
 	}
 
 	
